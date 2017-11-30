@@ -6,10 +6,15 @@
 #include <allegro5\allegro_ttf.h>
 #include <allegro5\mouse.h>
 #include <allegro5\keyboard.h>
+#include <allegro5\allegro_primitives.h>
 
-void print_welcome_screen();
-void print_meal_selection(); //TODO
+
+void print_welcome_screen(ALLEGRO_DISPLAY *display);
+void print_meal_selection(ALLEGRO_DISPLAY *second_display); //TODO
 void print_meal_description(); //TODO
+
+void print_textbox();
+void split_string(char* input_text, char** ingridients);
 
 int main() {
 
@@ -18,6 +23,7 @@ int main() {
 	al_init_ttf_addon();
 	al_install_keyboard();
 	al_install_mouse();
+	al_init_primitives_addon();
 
 	ALLEGRO_DISPLAY *display = al_create_display(800, 600);
 	if (!display)
@@ -26,7 +32,7 @@ int main() {
 		return 1;
 	}
 
-	print_welcome_screen();
+	print_welcome_screen(display);
 
 	ALLEGRO_MOUSE *mouse;
 	al_install_mouse();
@@ -38,13 +44,13 @@ int main() {
 
 	al_flip_display(display);
 		
-	al_rest(10.0);
+	al_rest(4.0);
 
 	al_destroy_display(display);
 	return 0;
 }
 
-void print_welcome_screen() {
+void print_welcome_screen(ALLEGRO_DISPLAY *display) {
 
 	al_clear_to_color(al_map_rgb(255, 255, 255));
 
@@ -56,7 +62,107 @@ void print_welcome_screen() {
 
 	al_draw_text(font1, al_map_rgb(144, 144, 144), 10, 370, ALLEGRO_ALIGN_LEFT, "Please insert at least three products and separate them with comma:");
 
+	
+
+	ALLEGRO_FONT *font2 = al_load_font("FantasqueSansMono-Regular.ttf", 16, NULL);
+	al_draw_text(font2, al_map_rgb(144,144,144), 380, 422, ALLEGRO_ALIGN_LEFT, "ok");
+
+	//ALLEGRO_KEYBOARD_EVENT 
+	char input_text[100];// = "asd";
+
+	print_textbox(input_text, display);
+
+	/*char ingridients[10][10];
+	split_string(input_text,ingridients);
+	al_draw_text(font1, al_map_rgb(253, 143, 0), 500, 490, ALLEGRO_ALIGN_LEFT, ingridients[1]);*/
+
 	al_destroy_font(font);
 	al_destroy_font(font1);
+	al_destroy_font(font2);
+}
+
+void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
+	int char_size = 16;
+	int carriage_position = 12;
+	printf("%c", input_text);
+	al_draw_rectangle(10, 410, 360, 450, al_map_rgb(144, 144, 144), 2); // textbox frame
+	al_draw_rectangle(370, 410, 410, 450, al_map_rgb(144, 144, 144), 2); //button
+
+	ALLEGRO_FONT *font2 = al_load_font("FantasqueSansMono-Regular.ttf", char_size, NULL);
+	
+
+	int i = 0;
+	bool live = true;
+
+	ALLEGRO_EVENT_QUEUE * queue = al_create_event_queue();
+	ALLEGRO_EVENT event;
+	
+	al_register_event_source(queue, al_get_keyboard_event_source());
+	//al_register_event_source(queue, al_get_mouse_event_source());
+	
+	
+
+	event.keyboard.unichar = NULL;
+
+	while (live) {
+		al_get_next_event(queue, & event);
+		al_flip_display(display);
+
+		if (event.keyboard.unichar != 0) { //0 is null in ascii
+			if (event.keyboard.unichar != 8) { //8 is backspace
+
+				input_text[i] = event.keyboard.unichar;
+				al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, input_text);
+				i++;
+				al_flip_display(display);
+				//carriage_position = carriage_position + char_size;
+			}
+			else
+			{
+				if (i > 0)
+				{
+
+				input_text[i - 1] = ' ';
+				i--; //if basckspace we want to move back
+				al_draw_filled_rectangle(10, 410, 360, 450, al_map_rgb(255, 255, 255), 2); // textbox field
+				al_draw_rectangle(10, 410, 360, 450, al_map_rgb(144, 144, 144), 2); // textbox frame
+				al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, input_text);
+				al_flip_display(display);
+			}
+		}
+		}
+		if (event.keyboard.unichar == 13) live = false;
+		
+		//i++;
+		if (i > 99)live = false;
+		event.keyboard.unichar = NULL;
+
+		
+
+
+	}
+
+}
+void print_meal_selection(ALLEGRO_DISPLAY *second_display)
+{
+	//ALLEGRO_DISPLAY *second_display = al_create_display(800, 600);
+	if (!second_display)
+	{
+		printf("Failed to create display.\n");
+		return 1;
+	}
+
+}
+void split_string(char* input_text, char** ingridients) {
+
+	int i = 0;
+	char * pch;
+	pch = strtok(input_text, ",");
+	while (pch != NULL)
+	{
+		pch = strtok(NULL, ",");
+		ingridients[i] = pch;
+		i++;
+	}
 
 }
