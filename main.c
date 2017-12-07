@@ -57,7 +57,7 @@ void print_welcome_screen(ALLEGRO_DISPLAY *display) {
 
 	al_clear_to_color(al_map_rgb(255, 255, 255));
 
-	ALLEGRO_BITMAP *test = al_load_bitmap("background1.png");
+	ALLEGRO_BITMAP *test = al_load_bitmap("firstScreenBack.png");
 	al_init_image_addon();
 	al_draw_bitmap(test, 0, 0, 0);
 
@@ -158,7 +158,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 					while (true)
 					{
 						char tempArray[100];
-						copyArray(partOfInput_text, tempArray, j);
+					copyArray(partOfInput_text, tempArray, j);
 						int newWidth = al_get_text_width(font2, tempArray);
 						if (newWidth < 350) 
 						{
@@ -166,10 +166,10 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 						}
 						j--; //partogInput in every itreation is decreased
 					}
-					char tempArray2[100];
+					/*char tempArray2[100];
 					reverse_string(partOfInput_text);
 					copyArray(partOfInput_text, tempArray2, j);
-					al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, tempArray2);
+					al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, tempArray2);*/
 				}
 
 				i++;
@@ -206,41 +206,34 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 void print_meal_selection(ALLEGRO_DISPLAY *display)
 {
 	al_clear_to_color(al_map_rgb(255, 255, 255));
-	ALLEGRO_BITMAP *test = al_load_bitmap("fridge.png");
+	ALLEGRO_BITMAP *test = al_load_bitmap("secondScreenBack.png");
 	al_init_image_addon();
 	al_draw_bitmap(test, 0, 0, 0);
 
-	al_draw_rectangle(50, 40, 750, 560, al_map_rgb(144, 144, 144), 2); //the big box
-	al_draw_line(50, 120, 750, 120, al_map_rgb(144, 144, 144), 2); //line which separate title from recipies
-	/*al_draw_line(50, 180, 750, 180, al_map_rgb(144, 144, 144), 1); //recipe 1
-	al_draw_line(50, 260, 750, 260, al_map_rgb(144, 144, 144), 1); //recipe 1
-	al_draw_line(50, 300, 750, 300, al_map_rgb(144, 144, 144), 1); //recipe 2
-	al_draw_line(50, 380, 750, 380, al_map_rgb(144, 144, 144), 1); //recipe 2
-	al_draw_line(50, 420, 750, 420, al_map_rgb(144, 144, 144), 1); //recipe 3
-	al_draw_line(50, 500, 750, 500, al_map_rgb(144, 144, 144), 1); //recipe 3*/
+	al_draw_rectangle(50, 40, 750, 560, al_map_rgb(144, 144, 144), 2);
 
 	ALLEGRO_FONT *font = al_load_font("Cambay.AH.ttf", 30, NULL);
 	al_draw_text(font, al_map_rgb(253, 143, 0), 60, 40, ALLEGRO_ALIGN_LEFT, "There are three ideas of meals based on your products,");
 	al_draw_text(font, al_map_rgb(253, 143, 0), 60, 77, ALLEGRO_ALIGN_LEFT, "please select one of them:");
 
-	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 27, NULL);
-	al_draw_text(font1, al_map_rgb(150, 150, 150), 60, 205, ALLEGRO_ALIGN_LEFT, "first");
-	al_draw_text(font1, al_map_rgb(100, 100, 100), 60, 325, ALLEGRO_ALIGN_LEFT, "second");
-	al_draw_text(font1, al_map_rgb(70, 70, 70), 60, 445, ALLEGRO_ALIGN_LEFT, "third");
+	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 38, NULL);
+	al_draw_text(font1, al_map_rgb(160, 160, 160), 100, 180, ALLEGRO_ALIGN_LEFT, "first");
+	al_draw_text(font1, al_map_rgb(95, 95, 95), 100, 260, ALLEGRO_ALIGN_LEFT, "second");
+	al_draw_text(font1, al_map_rgb(65, 65, 65), 100, 340, ALLEGRO_ALIGN_LEFT, "third");
 
 
 
 }
-void split_string(char* input_text, char** ingridients) {
+/*void split_string(char* input_text, char** ingridients) {
 
 	int i = 0;
 	char * pch;
 	pch = strtok(input_text, ",");
-	while (pch != NULL)
+	while (pch != NULL)    
 	{
 		pch = strtok(NULL, ",");
 		ingridients[i] = pch;
 		i++;
 	}
 
-}
+}*/
