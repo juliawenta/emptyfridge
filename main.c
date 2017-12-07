@@ -72,7 +72,7 @@ void print_welcome_screen(ALLEGRO_DISPLAY *display) {
 
 
 	ALLEGRO_FONT *font2 = al_load_font("Cambay.AH.ttf", 22, NULL);
-	al_draw_text(font2, al_map_rgb(144, 144, 144), 381, 415, ALLEGRO_ALIGN_LEFT, "ok");
+	al_draw_text(font2, al_map_rgb(144, 144, 144), 571, 415, ALLEGRO_ALIGN_LEFT, "ok");
 
 	//ALLEGRO_KEYBOARD_EVENT 
 	char input_text[100];// = "asd";
@@ -116,8 +116,8 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	int char_size = 28;
 	int carriage_position = 12;
 	printf("%c", input_text);
-	al_draw_rectangle(10, 410, 360, 450, al_map_rgb(144, 144, 144), 2); // textbox frame
-	al_draw_rectangle(370, 410, 410, 450, al_map_rgb(144, 144, 144), 2); //button
+	al_draw_rectangle(10, 410, 550, 450, al_map_rgb(144, 144, 144), 2); // textbox frame
+	al_draw_rectangle(560, 410, 600, 450, al_map_rgb(144, 144, 144), 2); //button
 
 	ALLEGRO_FONT *font2 = al_load_font("Cambay.AH.ttf", char_size, NULL);
 
@@ -144,7 +144,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 
 				input_text[i] = event.keyboard.unichar;
 				int width = al_get_text_width(font2, input_text);
-				if (width < 350)
+				if (width < 540)
 				{
 					al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, input_text);
 				}
@@ -160,7 +160,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 						char tempArray[100];
 					copyArray(partOfInput_text, tempArray, j);
 						int newWidth = al_get_text_width(font2, tempArray);
-						if (newWidth < 350) 
+						if (newWidth < 540) 
 						{
 							break;
 						}
@@ -183,8 +183,8 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 
 					input_text[i - 1] = ' ';
 					i--; //if basckspace we want to move back
-					al_draw_filled_rectangle(10, 410, 360, 450, al_map_rgb(255, 255, 255), 2); // textbox field
-					al_draw_rectangle(10, 410, 360, 450, al_map_rgb(144, 144, 144), 2); // textbox frame
+					al_draw_filled_rectangle(10, 410, 550, 450, al_map_rgb(255, 255, 255), 2); // textbox field
+					al_draw_rectangle(10, 410, 550, 450, al_map_rgb(144, 144, 144), 2);// textbox frame
 					al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, input_text);
 					al_flip_display(display);
 				}
@@ -221,6 +221,11 @@ void print_meal_selection(ALLEGRO_DISPLAY *display)
 	al_draw_text(font1, al_map_rgb(95, 95, 95), 100, 260, ALLEGRO_ALIGN_LEFT, "second");
 	al_draw_text(font1, al_map_rgb(65, 65, 65), 100, 340, ALLEGRO_ALIGN_LEFT, "third");
 
+	ALLEGRO_EVENT_QUEUE * queue = al_create_event_queue();
+	ALLEGRO_EVENT event;
+
+	al_register_event_source(queue, al_get_keyboard_event_source());
+
 
 
 }
@@ -237,3 +242,4 @@ void print_meal_selection(ALLEGRO_DISPLAY *display)
 	}
 
 }*/
+// cliparts included in bitmaps from: https://www.1001freedownloads.com
