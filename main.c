@@ -112,6 +112,7 @@ char *reverse_string(char *str) {
 	}
 	return str;
 }
+
 void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	int char_size = 28;
 	int carriage_position = 12;
@@ -123,88 +124,140 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 
 
 	int i = 0;
-	bool live = true;
+	int mouse_x;
+	int mouse_y;
+	int click_t = false;
+	int click_b = false;
 
-	ALLEGRO_EVENT_QUEUE * queue = al_create_event_queue();
-	ALLEGRO_EVENT event;
+	bool start = false; //to start insert and to click button
+	bool mouse_button = false;
+	bool mouse_textbox = false;
+	bool live = true; //to insert products
 
-	al_register_event_source(queue, al_get_keyboard_event_source()); //register keyboard
+	ALLEGRO_EVENT_QUEUE *insert_queue = al_create_event_queue();
+	al_register_event_source(insert_queue, al_get_mouse_event_source());
+	al_register_event_source(insert_queue, al_get_keyboard_event_source());
 
-	//al_register_event_source(queue, al_get_mouse_event_source());
+
+	//ALLEGRO_EVENT_QUEUE * keyboard_queue = al_create_event_queue();
 
 
-	event.keyboard.unichar = NULL;
+	while (!start && live)
+	{
 
-	while (live) {
-		al_get_next_event(queue, &event);
+
+		ALLEGRO_EVENT insert_event;
+		al_wait_for_event(insert_queue, &insert_event);
 		al_flip_display(display);
 
-		if (event.keyboard.unichar != 0) { //0 is null in ascii
-			if (event.keyboard.unichar != 8) { //8 is backspace
 
-				input_text[i] = event.keyboard.unichar;
-				int width = al_get_text_width(font2, input_text);
-				if (width < 540)
-				{
-					al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, input_text);
-				}
-				else
-				{
-					char partOfInput_text[100];
-					copyArray(input_text, partOfInput_text, i);
-					reverse_string(partOfInput_text);
-					int newSize = 0;
-					int j = i;
-					while (true)
-					{
-						char tempArray[100];
-					copyArray(partOfInput_text, tempArray, j);
-						int newWidth = al_get_text_width(font2, tempArray);
-						if (newWidth < 540) 
-						{
-							break;
-						}
-						j--; //partogInput in every itreation is decreased
-					}
-					/*char tempArray2[100];
-					reverse_string(partOfInput_text);
-					copyArray(partOfInput_text, tempArray2, j);
-					al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, tempArray2);*/
-				}
+		if (insert_event.type == ALLEGRO_EVENT_MOUSE_AXES)
+		{
+			mouse_x = insert_event.mouse.x;
+			mouse_y = insert_event.mouse.y;
 
-				i++;
-				al_flip_display(display);
-				//carriage_position = carriage_position + char_size;
-			}
-			else
+			printf("x: %i\n", mouse_x);
+			printf("y: %i\n", mouse_y);
+
+			if ((mouse_x >= 10) && (mouse_y >= 410) && (mouse_x <= 550) && (mouse_y <= 450))
 			{
-				if (i > 0)
-				{
+				mouse_textbox = true;
 
-					input_text[i - 1] = ' ';
-					i--; //if basckspace we want to move back
-					al_draw_filled_rectangle(10, 410, 550, 450, al_map_rgb(255, 255, 255), 2); // textbox field
-					al_draw_rectangle(10, 410, 550, 450, al_map_rgb(144, 144, 144), 2);// textbox frame
-					al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, input_text);
-					al_flip_display(display);
-				}
+			}
+
+			if ((mouse_x >= 560) && (mouse_y >= 410) && (mouse_x <= 600) && (mouse_y <= 450))
+			{
+				mouse_button = true;
+
+			}
+		}
+		if (insert_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+		{
+			if (mouse_textbox == true)
+			{
+				click_t = true; //means click at textbox
+
+			}
+			if (mouse_button == true)
+			{
+				click_b = true; //means click at button
+				start = true;
 			}
 		}
 
-		if (event.keyboard.unichar == 13) live = false; //13 is enter in ascii
+		//ALLEGRO_EVENT insert_event; //register keyboard
+		insert_event.keyboard.unichar = NULL;
+		al_get_next_event(insert_queue, &insert_event);
+		al_flip_display(display);
 
-		//i++;
-		if (i > 99)live = false;
-		event.keyboard.unichar = NULL;
+		if (click_t == true) {
 
+			if (insert_event.keyboard.unichar != 0) { //0 is null in ascii
+				if (insert_event.keyboard.unichar != 8) { //8 is backspace
+
+					input_text[i] = insert_event.keyboard.unichar;
+					int width = al_get_text_width(font2, input_text);
+					if (width < 540)
+					{
+						al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, input_text);
+					}
+					else
+					{
+						char partOfInput_text[100];
+						copyArray(input_text, partOfInput_text, i);
+						reverse_string(partOfInput_text);
+						int newSize = 0;
+						int j = i;
+						while (true)
+						{
+							char tempArray[100];
+							copyArray(partOfInput_text, tempArray, j);
+							int newWidth = al_get_text_width(font2, tempArray);
+							if (newWidth < 540)
+							{
+								break;
+							}
+							j--; //partogInput in every itreation is decreased
+						}
+						/*char tempArray2[100];
+						reverse_string(partOfInput_text);
+						copyArray(partOfInput_text, tempArray2, j);
+						al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, tempArray2);*/
+					}
+
+					i++;
+					al_flip_display(display);
+					//carriage_position = carriage_position + char_size;
+				}
+				else
+				{
+					if (i > 0)
+					{
+
+						input_text[i - 1] = ' ';
+						i--; //if basckspace we want to move back
+						al_draw_filled_rectangle(10, 410, 550, 450, al_map_rgb(255, 255, 255), 2); // textbox field
+						al_draw_rectangle(10, 410, 550, 450, al_map_rgb(144, 144, 144), 2);// textbox frame
+						al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, input_text);
+						al_flip_display(display);
+					}
+				}
+			}
+
+			if (insert_event.keyboard.unichar == 13) live = false; //13 is enter in ascii
+
+			//i++;
+			if (i > 99)live = false;
+			insert_event.keyboard.unichar = NULL;
+
+		}
+	}
+	
 	}
 
-}
 
+	void print_meal_selection(ALLEGRO_DISPLAY *display){
 
-
-void print_meal_selection(ALLEGRO_DISPLAY *display)
-{
 	al_clear_to_color(al_map_rgb(255, 255, 255));
 	ALLEGRO_BITMAP *test = al_load_bitmap("secondScreenBack.png");
 	al_init_image_addon();
@@ -217,9 +270,12 @@ void print_meal_selection(ALLEGRO_DISPLAY *display)
 	al_draw_text(font, al_map_rgb(253, 143, 0), 60, 77, ALLEGRO_ALIGN_LEFT, "please select one of them:");
 
 	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 38, NULL);
-	al_draw_text(font1, al_map_rgb(160, 160, 160), 100, 180, ALLEGRO_ALIGN_LEFT, "first");
-	al_draw_text(font1, al_map_rgb(95, 95, 95), 100, 260, ALLEGRO_ALIGN_LEFT, "second");
-	al_draw_text(font1, al_map_rgb(65, 65, 65), 100, 340, ALLEGRO_ALIGN_LEFT, "third");
+	al_draw_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144), 2);
+	al_draw_text(font1, al_map_rgb(160, 160, 160), 130, 164, ALLEGRO_ALIGN_LEFT, "first");
+	al_draw_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144), 2);
+	al_draw_text(font1, al_map_rgb(95, 95, 95), 130, 234, ALLEGRO_ALIGN_LEFT, "second");
+	al_draw_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144), 2);
+	al_draw_text(font1, al_map_rgb(65, 65, 65), 130, 304, ALLEGRO_ALIGN_LEFT, "third");
 
 	ALLEGRO_EVENT_QUEUE * queue = al_create_event_queue();
 	ALLEGRO_EVENT event;
