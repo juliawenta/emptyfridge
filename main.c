@@ -10,7 +10,7 @@
 
 
 void print_welcome_screen(ALLEGRO_DISPLAY *display);
-void print_meal_selection(ALLEGRO_DISPLAY *second_display); //TODO
+void print_meal_selection(ALLEGRO_DISPLAY *second_display); 
 void print_meal_description(); //TODO
 
 void print_textbox();
@@ -35,6 +35,7 @@ int main() {
 
 	print_welcome_screen(display);
 	print_meal_selection(display);
+	print_meal_description(display);
 
 
 	ALLEGRO_MOUSE *mouse;
@@ -42,8 +43,6 @@ int main() {
 
 	ALLEGRO_KEYBOARD_STATE *keyboard;
 	al_install_keyboard();
-
-
 
 	al_flip_display(display);
 
@@ -69,19 +68,16 @@ void print_welcome_screen(ALLEGRO_DISPLAY *display) {
 
 	al_draw_text(font1, al_map_rgb(144, 144, 144), 10, 360, ALLEGRO_ALIGN_LEFT, "Please insert at least three products and separate them with comma:");
 
-
-
 	ALLEGRO_FONT *font2 = al_load_font("Cambay.AH.ttf", 22, NULL);
 	al_draw_text(font2, al_map_rgb(144, 144, 144), 571, 415, ALLEGRO_ALIGN_LEFT, "ok");
 
-	//ALLEGRO_KEYBOARD_EVENT 
-	char input_text[100];// = "asd";
+	char input_text[100];
 
 	print_textbox(input_text, display);
 
-	/*char ingridients[10][10];
+	char ingridients[10][10];
 	split_string(input_text,ingridients);
-	al_draw_text(font1, al_map_rgb(253, 143, 0), 500, 490, ALLEGRO_ALIGN_LEFT, ingridients[1]);*/
+	//al_draw_text(font1, al_map_rgb(253, 143, 0), 500, 490, ALLEGRO_ALIGN_LEFT, ingridients[1]);
 
 	al_destroy_font(font);
 	al_destroy_font(font1);
@@ -138,10 +134,6 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	al_register_event_source(insert_queue, al_get_mouse_event_source());
 	al_register_event_source(insert_queue, al_get_keyboard_event_source());
 
-
-	//ALLEGRO_EVENT_QUEUE * keyboard_queue = al_create_event_queue();
-
-
 	while (!start && live)
 	{
 
@@ -185,7 +177,6 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 			}
 		}
 
-		//ALLEGRO_EVENT insert_event; //register keyboard
 		insert_event.keyboard.unichar = NULL;
 		al_get_next_event(insert_queue, &insert_event);
 		al_flip_display(display);
@@ -219,10 +210,10 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 							}
 							j--; //partogInput in every itreation is decreased
 						}
-						/*char tempArray2[100];
+						char tempArray2[100];
 						reverse_string(partOfInput_text);
 						copyArray(partOfInput_text, tempArray2, j);
-						al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, tempArray2);*/
+						al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, tempArray2);
 					}
 
 					i++;
@@ -246,7 +237,6 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 
 			if (insert_event.keyboard.unichar == 13) live = false; //13 is enter in ascii
 
-			//i++;
 			if (i > 99)live = false;
 			insert_event.keyboard.unichar = NULL;
 
@@ -259,6 +249,8 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	void print_meal_selection(ALLEGRO_DISPLAY *display){
 
 	al_clear_to_color(al_map_rgb(255, 255, 255));
+
+
 	ALLEGRO_BITMAP *test = al_load_bitmap("secondScreenBack.png");
 	al_init_image_addon();
 	al_draw_bitmap(test, 0, 0, 0);
@@ -277,15 +269,76 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	al_draw_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144), 2);
 	al_draw_text(font1, al_map_rgb(65, 65, 65), 130, 304, ALLEGRO_ALIGN_LEFT, "third");
 
-	ALLEGRO_EVENT_QUEUE * queue = al_create_event_queue();
-	ALLEGRO_EVENT event;
+	
+	int mouse_x;
+	int mouse_y;
+	int click_f = false; // click first recipe
+	int click_s = false; //click second recipe
+	int click_t = false; //click third recipe
 
-	al_register_event_source(queue, al_get_keyboard_event_source());
+	bool mouse_first = false;
+	bool mouse_second = false;
+	bool mouse_third = false;
+	bool chosen = false; //if recipe is chosen
 
 
+		while(!chosen){
+
+			ALLEGRO_EVENT_QUEUE *select_queue = al_create_event_queue();
+			al_register_event_source(select_queue, al_get_mouse_event_source());
+
+			ALLEGRO_EVENT select_event;
+			al_wait_for_event(select_queue, &select_event);
+			al_flip_display(display);
+
+	if (select_event.type == ALLEGRO_EVENT_MOUSE_AXES)
+	{
+		mouse_x = select_event.mouse.x;
+		mouse_y = select_event.mouse.y;
+
+		printf("x: %i\n", mouse_x);
+		printf("y: %i\n", mouse_y);
+
+		if ((mouse_x >= 100) && (mouse_y >= 180) && (mouse_x <= 120) && (mouse_y <= 200))
+		{
+			mouse_first= true;
+			al_draw_filled_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144));
+		}
+
+		if ((mouse_x >= 100) && (mouse_y >= 250) && (mouse_x <= 120) && (mouse_y <= 270))
+		{
+			mouse_second = true;
+			al_draw_filled_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144));
+		}
+		if ((mouse_x >= 100) && (mouse_y >= 320) && (mouse_x <= 120) && (mouse_y <= 340))
+		{
+			mouse_third = true;
+			al_draw_filled_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144));
+		}
+	}
+	if (select_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+	{
+		if (mouse_first == true)
+		{
+			click_f = true; //means click at textbox
+			chosen = true;
+		}
+		if (mouse_second == true)
+		{
+			click_s = true; //means click at button
+			chosen = true;
+		}
+		if (mouse_third == true)
+		{
+			click_t = true; //means click at button
+			chosen = true;
+		}
+	}
+	}
 
 }
-/*void split_string(char* input_text, char** ingridients) {
+
+void split_string(char* input_text, char** ingridients) {
 
 	int i = 0;
 	char * pch;
@@ -297,5 +350,12 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 		i++;
 	}
 
-}*/
+}
 // cliparts included in bitmaps from: https://www.1001freedownloads.com
+
+
+	void print_meal_description(ALLEGRO_DISPLAY *display) {
+
+		al_clear_to_color(al_map_rgb(255, 255, 255));
+	
+	}
