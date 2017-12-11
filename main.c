@@ -156,11 +156,19 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 				mouse_textbox = true;
 
 			}
+			else
+			{
+				mouse_textbox = false;
+			}
 
 			if ((mouse_x >= 560) && (mouse_y >= 410) && (mouse_x <= 600) && (mouse_y <= 450))
 			{
 				mouse_button = true;
 
+			}
+			else
+			{
+				mouse_button = false;
 			}
 		}
 		if (insert_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
@@ -168,12 +176,19 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 			if (mouse_textbox == true)
 			{
 				click_t = true; //means click at textbox
-
+			}
+			else
+			{
+				click_t = false;
 			}
 			if (mouse_button == true)
 			{
 				click_b = true; //means click at button
 				start = true;
+			}
+			else
+			{
+				click_b = false;
 			}
 		}
 
@@ -304,16 +319,35 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 			mouse_first= true;
 			al_draw_filled_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144));
 		}
+		else
+		{
+			mouse_first = false;
+			al_draw_filled_rectangle(100, 180, 120, 200, al_map_rgb(255, 255, 255));
+			al_draw_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144), 2);
+		}
 
 		if ((mouse_x >= 100) && (mouse_y >= 250) && (mouse_x <= 120) && (mouse_y <= 270))
 		{
 			mouse_second = true;
 			al_draw_filled_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144));
 		}
+		else
+		{
+			mouse_second = false;
+			al_draw_filled_rectangle(100, 250, 120, 270, al_map_rgb(255, 255, 255));
+			al_draw_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144), 2);
+		}
+
 		if ((mouse_x >= 100) && (mouse_y >= 320) && (mouse_x <= 120) && (mouse_y <= 340))
 		{
 			mouse_third = true;
 			al_draw_filled_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144));
+		}
+		else
+		{
+			mouse_third = false;
+			al_draw_filled_rectangle(100, 320, 120, 340, al_map_rgb(255, 255, 255));
+			al_draw_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144), 2);
 		}
 	}
 	if (select_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
