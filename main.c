@@ -1,3 +1,4 @@
+#define CURL_STATICLIB
 #include <stdio.h>
 #include <allegro5\allegro.h>
 #include <allegro5\allegro_font.h>
@@ -7,16 +8,32 @@
 #include <allegro5\mouse.h>
 #include <allegro5\keyboard.h>
 #include <allegro5\allegro_primitives.h>
+#include <curl\curl.h>
+#include <stdlib.h>
+//#include <curl\curlbuild.h>
+#include <config-win32.h>
+#include "curl.h"
+//#include "curl\curlver.h"
+//#include "curlrules.h"
+
+//#include <curl.7.30.0.2\tools\native\v110\Win32\Release\dynamic\libcurl.lib>
+
+
+
 
 
 void print_welcome_screen(ALLEGRO_DISPLAY *display);
 void print_meal_selection(ALLEGRO_DISPLAY *second_display); 
 void print_meal_description(); //TODO
-
 void print_textbox();
 void split_string(char* input_text, char** ingridients);
 
 int main() {
+
+	CURL *curl = curl_easy_init();
+	
+	curl_easy_cleanup(curl);
+
 
 	al_init();
 	al_init_font_addon();
@@ -56,9 +73,9 @@ void print_welcome_screen(ALLEGRO_DISPLAY *display) {
 
 	al_clear_to_color(al_map_rgb(255, 255, 255));
 
-	ALLEGRO_BITMAP *test = al_load_bitmap("firstScreenBack.png");
+	ALLEGRO_BITMAP *background = al_load_bitmap("firstScreenBack.png");
 	al_init_image_addon();
-	al_draw_bitmap(test, 0, 0, 0);
+	al_draw_bitmap(background, 0, 0, 0);
 
 	ALLEGRO_FONT *font = al_load_font("Cambay.AH.ttf", 45, NULL); // from https://fontlibrary.org/pl/font/cambay
 	al_draw_text(font, al_map_rgb(253, 143, 0), 350, 600 / 8, ALLEGRO_ALIGN_CENTRE, "Hello! Welcome to emptyfridge!");
@@ -266,9 +283,9 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	al_clear_to_color(al_map_rgb(255, 255, 255));
 
 
-	ALLEGRO_BITMAP *test = al_load_bitmap("secondScreenBack.png");
+	ALLEGRO_BITMAP *background = al_load_bitmap("secondScreenBack.png");
 	al_init_image_addon();
-	al_draw_bitmap(test, 0, 0, 0);
+	al_draw_bitmap(background, 0, 0, 0);
 
 	al_draw_rectangle(50, 40, 750, 560, al_map_rgb(144, 144, 144), 2);
 
@@ -385,11 +402,14 @@ void split_string(char* input_text, char** ingridients) {
 	}
 
 }
-// cliparts included in bitmaps from: https://www.1001freedownloads.com
+// cliparts included in bitmaps from: https://www.1001freedownloads.com, https://openclipart.org/user-detail/Gerald_G
 
 
 	void print_meal_description(ALLEGRO_DISPLAY *display) {
 
 		al_clear_to_color(al_map_rgb(255, 255, 255));
+		ALLEGRO_BITMAP *background = al_load_bitmap("thirdScreenBack.png");
+		al_init_image_addon();
+		al_draw_bitmap(background, 0, 0, 0);
 	
 	}
