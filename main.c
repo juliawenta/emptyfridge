@@ -8,7 +8,7 @@
 #include <allegro5\keyboard.h>
 #include <allegro5\allegro_primitives.h>
 #include <stdlib.h>
-#include "resthandler.h"
+
 
 const char * print_welcome_screen(ALLEGRO_DISPLAY *display);
 void print_meal_selection(ALLEGRO_DISPLAY *second_display); 
@@ -36,8 +36,11 @@ int main(void) {
 		return 1;
 	}
 
-	char * ingridients = print_welcome_screen(display);
+	FILE *file= fopen("ingr.txt", "w");
+	const char * ingridients = print_welcome_screen(display);
 	//save to file so we can read it in RestHandler.py
+	fprintf(file,  ingridients);
+	fclose(file);
 	
 	print_meal_selection(display);
 	print_meal_description(display);
@@ -82,7 +85,7 @@ const char * print_welcome_screen(ALLEGRO_DISPLAY *display) {
 	print_textbox(input_text, display);
 
 	char ingridients[10][10];
-	split_string(input_text,ingridients);
+	//split_string(input_text,ingridients);
 
 	al_destroy_font(font);
 	al_destroy_font(font1);
@@ -369,7 +372,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	}
 }
 
-void split_string(char* input_text, char** ingridients) {
+/*void split_string(char* input_text, char** ingridients) {
 
 	int i = 0;
 	char * pch;
@@ -380,7 +383,7 @@ void split_string(char* input_text, char** ingridients) {
 		ingridients[i] = pch;
 		i++;
 	}
-}
+}*/
 // cliparts included in bitmaps from: https://www.1001freedownloads.com, https://openclipart.org/user-detail/Gerald_G
 
 

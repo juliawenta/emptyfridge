@@ -37,8 +37,4 @@
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)\libcurl.dll" />
-    <None Include="$(MSBuildThisFileDirectory)\LibCurlShim.dll" />
-  </ItemGroup>
 </Project>
