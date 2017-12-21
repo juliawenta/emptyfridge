@@ -92,6 +92,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Wenta\Documents\emptyfridge\Debug;$(IncludePath)</IncludePath>
     <Linkage-curl>ltcg</Linkage-curl>
+    <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -137,9 +138,10 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>BUILDING_LIBCURL;HTTP_ONLY;CURL_STATICLIB</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\Users\Wenta\Documents\emptyfridge\packages\curl.7.30.0.2\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -170,23 +172,29 @@
     </ClInclude>
     <ClInclude Include="packages\curl.7.30.0.2\build\native\include\curl\curlrules.h">
       <FileType>CppCode</FileType>
+      <DeploymentContent>true</DeploymentContent>
     </ClInclude>
     <ClInclude Include="packages\curl.7.30.0.2\build\native\include\curl\curlver.h">
       <FileType>CppCode</FileType>
+      <DeploymentContent>true</DeploymentContent>
     </ClInclude>
+    <ClInclude Include="resthandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets" Condition="Exists('packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets')" />
     <Import Project="packages\Allegro.5.2.3.1\build\native\Allegro.targets" Condition="Exists('packages\Allegro.5.2.3.1\build\native\Allegro.targets')" />
-    <Import Project="packages\libssh2.redist.1.4.3.1\build\native\libssh2.redist.targets" Condition="Exists('packages\libssh2.redist.1.4.3.1\build\native\libssh2.redist.targets')" />
     <Import Project="packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets" Condition="Exists('packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets')" />
     <Import Project="packages\zlib.redist.1.2.8.1\build\native\zlib.redist.targets" Condition="Exists('packages\zlib.redist.1.2.8.1\build\native\zlib.redist.targets')" />
     <Import Project="packages\zlib.1.2.8.1\build\native\zlib.targets" Condition="Exists('packages\zlib.1.2.8.1\build\native\zlib.targets')" />
     <Import Project="packages\openssl.1.0.1.21\build\native\openssl.targets" Condition="Exists('packages\openssl.1.0.1.21\build\native\openssl.targets')" />
-    <Import Project="packages\libssh2.1.4.3.1\build\native\libssh2.targets" Condition="Exists('packages\libssh2.1.4.3.1\build\native\libssh2.targets')" />
     <Import Project="packages\curl.redist.7.30.0.2\build\native\curl.redist.targets" Condition="Exists('packages\curl.redist.7.30.0.2\build\native\curl.redist.targets')" />
     <Import Project="packages\curl.7.30.0.2\build\native\curl.targets" Condition="Exists('packages\curl.7.30.0.2\build\native\curl.targets')" />
+    <Import Project="packages\curl-vc140-static-32_64.7.52.1\build\native\curl-vc140-static-32_64.targets" Condition="Exists('packages\curl-vc140-static-32_64.7.52.1\build\native\curl-vc140-static-32_64.targets')" />
+    <Import Project="packages\libcurl.NET.x64.1.4.1.0\build\libcurl.NET.x64.targets" Condition="Exists('packages\libcurl.NET.x64.1.4.1.0\build\libcurl.NET.x64.targets')" />
+    <Import Project="packages\curlpp.symbols.0.7.3.1\build\native\curlpp.symbols.targets" Condition="Exists('packages\curlpp.symbols.0.7.3.1\build\native\curlpp.symbols.targets')" />
+    <Import Project="packages\libssh2.redist.1.4.3.3\build\native\libssh2.redist.targets" Condition="Exists('packages\libssh2.redist.1.4.3.3\build\native\libssh2.redist.targets')" />
+    <Import Project="packages\libssh2.1.4.3.3\build\native\libssh2.targets" Condition="Exists('packages\libssh2.1.4.3.3\build\native\libssh2.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -194,14 +202,17 @@
     </PropertyGroup>
     <Error Condition="!Exists('packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\AllegroDeps.1.7.0.0\build\native\AllegroDeps.targets'))" />
     <Error Condition="!Exists('packages\Allegro.5.2.3.1\build\native\Allegro.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Allegro.5.2.3.1\build\native\Allegro.targets'))" />
-    <Error Condition="!Exists('packages\libssh2.redist.1.4.3.1\build\native\libssh2.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\libssh2.redist.1.4.3.1\build\native\libssh2.redist.targets'))" />
     <Error Condition="!Exists('packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets'))" />
     <Error Condition="!Exists('packages\zlib.redist.1.2.8.1\build\native\zlib.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\zlib.redist.1.2.8.1\build\native\zlib.redist.targets'))" />
     <Error Condition="!Exists('packages\zlib.1.2.8.1\build\native\zlib.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\zlib.1.2.8.1\build\native\zlib.targets'))" />
     <Error Condition="!Exists('packages\openssl.1.0.1.21\build\native\openssl.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\openssl.1.0.1.21\build\native\openssl.props'))" />
     <Error Condition="!Exists('packages\openssl.1.0.1.21\build\native\openssl.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\openssl.1.0.1.21\build\native\openssl.targets'))" />
-    <Error Condition="!Exists('packages\libssh2.1.4.3.1\build\native\libssh2.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\libssh2.1.4.3.1\build\native\libssh2.targets'))" />
     <Error Condition="!Exists('packages\curl.redist.7.30.0.2\build\native\curl.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\curl.redist.7.30.0.2\build\native\curl.redist.targets'))" />
     <Error Condition="!Exists('packages\curl.7.30.0.2\build\native\curl.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\curl.7.30.0.2\build\native\curl.targets'))" />
+    <Error Condition="!Exists('packages\curl-vc140-static-32_64.7.52.1\build\native\curl-vc140-static-32_64.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\curl-vc140-static-32_64.7.52.1\build\native\curl-vc140-static-32_64.targets'))" />
+    <Error Condition="!Exists('packages\libcurl.NET.x64.1.4.1.0\build\libcurl.NET.x64.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\libcurl.NET.x64.1.4.1.0\build\libcurl.NET.x64.targets'))" />
+    <Error Condition="!Exists('packages\curlpp.symbols.0.7.3.1\build\native\curlpp.symbols.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\curlpp.symbols.0.7.3.1\build\native\curlpp.symbols.targets'))" />
+    <Error Condition="!Exists('packages\libssh2.redist.1.4.3.3\build\native\libssh2.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\libssh2.redist.1.4.3.3\build\native\libssh2.redist.targets'))" />
+    <Error Condition="!Exists('packages\libssh2.1.4.3.3\build\native\libssh2.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\libssh2.1.4.3.3\build\native\libssh2.targets'))" />
   </Target>
 </Project>

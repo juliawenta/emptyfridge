@@ -33,5 +33,12 @@
     <ClInclude Include="packages\curl.7.30.0.2\build\native\include\curl\curlbuild.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resthandler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)\libcurl.dll" />
+    <None Include="$(MSBuildThisFileDirectory)\LibCurlShim.dll" />
   </ItemGroup>
 </Project>

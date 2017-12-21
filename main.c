@@ -1,4 +1,3 @@
-#define CURL_STATICLIB
 #include <stdio.h>
 #include <allegro5\allegro.h>
 #include <allegro5\allegro_font.h>
@@ -8,33 +7,19 @@
 #include <allegro5\mouse.h>
 #include <allegro5\keyboard.h>
 #include <allegro5\allegro_primitives.h>
-#include <curl\curl.h>
 #include <stdlib.h>
-//#include <curl\curlbuild.h>
-#include <config-win32.h>
-#include "curl.h"
-//#include "curl\curlver.h"
-//#include "curlrules.h"
+#include "resthandler.h"
 
-//#include <curl.7.30.0.2\tools\native\v110\Win32\Release\dynamic\libcurl.lib>
-
-
-
-
-
-void print_welcome_screen(ALLEGRO_DISPLAY *display);
+const char * print_welcome_screen(ALLEGRO_DISPLAY *display);
 void print_meal_selection(ALLEGRO_DISPLAY *second_display); 
 void print_meal_description(); //TODO
 void print_textbox();
 void split_string(char* input_text, char** ingridients);
 
-int main() {
+int main(void) {
 
-	CURL *curl = curl_easy_init();
-	
-	curl_easy_cleanup(curl);
-
-
+//	printf("%i", test());
+	system("python.exe RestHandler/RestHandler.py url 1");	
 	al_init();
 	al_init_font_addon();
 	al_init_ttf_addon();
@@ -43,6 +28,7 @@ int main() {
 	al_init_primitives_addon();
 	al_init_image_addon();
 
+
 	ALLEGRO_DISPLAY *display = al_create_display(800, 600);
 	if (!display)
 	{
@@ -50,7 +36,9 @@ int main() {
 		return 1;
 	}
 
-	print_welcome_screen(display);
+	char * ingridients = print_welcome_screen(display);
+	//save to file so we can read it in RestHandler.py
+	
 	print_meal_selection(display);
 	print_meal_description(display);
 
@@ -66,10 +54,11 @@ int main() {
 	al_rest(40.0);
 
 	al_destroy_display(display);
+	
 	return 0;
 }
 
-void print_welcome_screen(ALLEGRO_DISPLAY *display) {
+const char * print_welcome_screen(ALLEGRO_DISPLAY *display) {
 
 	al_clear_to_color(al_map_rgb(255, 255, 255));
 
@@ -94,11 +83,11 @@ void print_welcome_screen(ALLEGRO_DISPLAY *display) {
 
 	char ingridients[10][10];
 	split_string(input_text,ingridients);
-	//al_draw_text(font1, al_map_rgb(253, 143, 0), 500, 490, ALLEGRO_ALIGN_LEFT, ingridients[1]);
 
 	al_destroy_font(font);
 	al_destroy_font(font1);
 	al_destroy_font(font2);
+	return input_text;
 }
 int copyArray(char *from, char *to, int size) {
 
@@ -135,7 +124,6 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 
 	ALLEGRO_FONT *font2 = al_load_font("Cambay.AH.ttf", char_size, NULL);
 
-
 	int i = 0;
 	int mouse_x;
 	int mouse_y;
@@ -153,8 +141,6 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 
 	while (!start && live)
 	{
-
-
 		ALLEGRO_EVENT insert_event;
 		al_wait_for_event(insert_queue, &insert_event);
 		al_flip_display(display);
@@ -236,7 +222,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 							char tempArray[100];
 							copyArray(partOfInput_text, tempArray, j);
 							int newWidth = al_get_text_width(font2, tempArray);
-							if (newWidth < 540)
+							if (newWidth > 540)
 							{
 								break;
 							}
@@ -274,16 +260,13 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 
 		}
 	}
-	
-	}
-
+		}
 
 	void print_meal_selection(ALLEGRO_DISPLAY *display){
 
 	al_clear_to_color(al_map_rgb(255, 255, 255));
 
-
-	ALLEGRO_BITMAP *background = al_load_bitmap("secondScreenBack.png");
+	ALLEGRO_BITMAP *background = al_load_bitmap("secondScreenBack2.png");
 	al_init_image_addon();
 	al_draw_bitmap(background, 0, 0, 0);
 
@@ -301,7 +284,6 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	al_draw_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144), 2);
 	al_draw_text(font1, al_map_rgb(65, 65, 65), 130, 304, ALLEGRO_ALIGN_LEFT, "third");
 
-	
 	int mouse_x;
 	int mouse_y;
 	int click_f = false; // click first recipe
@@ -312,7 +294,6 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	bool mouse_second = false;
 	bool mouse_third = false;
 	bool chosen = false; //if recipe is chosen
-
 
 		while(!chosen){
 
@@ -386,7 +367,6 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 		}
 	}
 	}
-
 }
 
 void split_string(char* input_text, char** ingridients) {
@@ -400,7 +380,6 @@ void split_string(char* input_text, char** ingridients) {
 		ingridients[i] = pch;
 		i++;
 	}
-
 }
 // cliparts included in bitmaps from: https://www.1001freedownloads.com, https://openclipart.org/user-detail/Gerald_G
 
@@ -412,4 +391,59 @@ void split_string(char* input_text, char** ingridients) {
 		al_init_image_addon();
 		al_draw_bitmap(background, 0, 0, 0);
 	
+		ALLEGRO_FONT *font = al_load_font("Cambay.AH.ttf", 30, NULL);
+		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 22, ALLEGRO_ALIGN_LEFT, "That is a very good choice,");
+		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 50, ALLEGRO_ALIGN_LEFT, "here are some information about yours recipe:");
+
+		ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 25, NULL);
+		al_draw_text(font1, al_map_rgb(253, 143, 0), 45, 440, ALLEGRO_ALIGN_LEFT, "Click HERE to see recipe.");
+
+		int x=0;
+		int y=0;
+		bool third_screen = false; //if recipe is chosen
+		bool click = false;
+		bool mouse_over_here = false;
+		bool click_link = false;
+
+		while (!third_screen) {
+
+			ALLEGRO_EVENT_QUEUE *select_queue = al_create_event_queue();
+			al_register_event_source(select_queue, al_get_mouse_event_source());
+
+			ALLEGRO_EVENT select_event;
+			al_wait_for_event(select_queue, &select_event);
+			al_flip_display(display);
+
+
+			if (select_event.type == ALLEGRO_EVENT_MOUSE_AXES)
+			{
+				x = select_event.mouse.x;
+				y = select_event.mouse.y;
+
+				printf("x: %i\n", x);
+				printf("y: %i\n", y);
+			}
+			if ((y >= 449) && (y <= 463) && (x >= 96) && (x <= 139))
+			{
+				al_draw_text(font1, al_map_rgb(255, 68, 0), 94, 440, ALLEGRO_ALIGN_LEFT, "HERE");
+				al_flip_display(display);
+				mouse_over_here = true;
+			}
+			else 
+			{
+				al_draw_text(font1, al_map_rgb(255, 255, 255), 45, 440, ALLEGRO_ALIGN_LEFT, "Click HERE to see recipe.");
+				al_draw_text(font1, al_map_rgb(253, 143, 0), 45, 440, ALLEGRO_ALIGN_LEFT, "Click HERE to see recipe.");
+				mouse_over_here = false;
+			}
+
+			if (select_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
+			{
+				if (mouse_over_here == true)
+				{
+					click = true; //means click at the link
+					click_link = true;
+				}
+			}
+		}
+
 	}
