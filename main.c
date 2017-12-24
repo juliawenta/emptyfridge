@@ -8,6 +8,8 @@
 #include <allegro5\keyboard.h>
 #include <allegro5\allegro_primitives.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 
 const char * print_welcome_screen(ALLEGRO_DISPLAY *display);
@@ -19,7 +21,8 @@ void split_string(char* input_text, char** ingridients);
 int main(void) {
 
 //	printf("%i", test());
-	system("python.exe RestHandler/RestHandler.py url 1");	
+
+
 	al_init();
 	al_init_font_addon();
 	al_init_ttf_addon();
@@ -36,15 +39,21 @@ int main(void) {
 		return 1;
 	}
 
+	//system("python.exe RestHandler/RestHandler.py url 1");
+
 	FILE *file= fopen("ingr.txt", "w");
 	const char * ingridients = print_welcome_screen(display);
-	//save to file so we can read it in RestHandler.py
-	fprintf(file,  ingridients);
-	fclose(file);
 	
-	print_meal_selection(display);
-	print_meal_description(display);
+	fprintf(file,  ingridients);
+	
+	//system("python.exe RestHandler/RestHandler.py url 1");
+	fclose(file);
+	//system("python.exe RestHandler/RestHandler.py url 1");
 
+	system("python.exe RestHandler/RestHandler.py recipe");
+
+	print_meal_selection(display); //TODO: function returns int which describe recipe number
+	print_meal_description(display);
 
 	ALLEGRO_MOUSE *mouse;
 	al_install_mouse();
@@ -90,7 +99,21 @@ const char * print_welcome_screen(ALLEGRO_DISPLAY *display) {
 	al_destroy_font(font);
 	al_destroy_font(font1);
 	al_destroy_font(font2);
-	return input_text;
+
+	char cleaned_input_text[100];
+
+	int i = 0, c = 0; /*I'm assuming you're not using C99+*/
+	for (; i < 100; i++)
+	{
+		if (isalpha(input_text[i]) || (input_text[i]==','))
+		{	
+			cleaned_input_text[c] = input_text[i];
+			c++;
+		}
+	}
+	cleaned_input_text[c] = '\0';
+
+	return cleaned_input_text;
 }
 int copyArray(char *from, char *to, int size) {
 
@@ -154,8 +177,8 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 			mouse_x = insert_event.mouse.x;
 			mouse_y = insert_event.mouse.y;
 
-			printf("x: %i\n", mouse_x);
-			printf("y: %i\n", mouse_y);
+			//printf("x: %i\n", mouse_x);
+			//printf("y: %i\n", mouse_y);
 
 			if ((mouse_x >= 10) && (mouse_y >= 410) && (mouse_x <= 550) && (mouse_y <= 450))
 			{
@@ -312,8 +335,8 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 		mouse_x = select_event.mouse.x;
 		mouse_y = select_event.mouse.y;
 
-		printf("x: %i\n", mouse_x);
-		printf("y: %i\n", mouse_y);
+	//	printf("x: %i\n", mouse_x);
+		//printf("y: %i\n", mouse_y);
 
 		if ((mouse_x >= 100) && (mouse_y >= 180) && (mouse_x <= 120) && (mouse_y <= 200))
 		{
@@ -387,6 +410,16 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 // cliparts included in bitmaps from: https://www.1001freedownloads.com, https://openclipart.org/user-detail/Gerald_G
 
 
+const char * load_file(char *file_name)
+{
+	char result[1000];
+
+	FILE *file;
+	file = fopen(file_name, "r");
+	fgets(result, sizeof(result), file);
+	return result;
+}
+
 	void print_meal_description(ALLEGRO_DISPLAY *display) {
 
 		al_clear_to_color(al_map_rgb(255, 255, 255));
@@ -408,6 +441,11 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 		bool mouse_over_here = false;
 		bool click_link = false;
 
+		system("python.exe RestHandler/RestHandler.py url 1");
+		char *url=load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt");
+		printf("%s", url);
+		
+
 		while (!third_screen) {
 
 			ALLEGRO_EVENT_QUEUE *select_queue = al_create_event_queue();
@@ -423,8 +461,8 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 				x = select_event.mouse.x;
 				y = select_event.mouse.y;
 
-				printf("x: %i\n", x);
-				printf("y: %i\n", y);
+			//	printf("x: %i\n", x);
+				//printf("y: %i\n", y);
 			}
 			if ((y >= 449) && (y <= 463) && (x >= 96) && (x <= 139))
 			{
