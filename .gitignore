@@ -5,4 +5,5 @@
 /Debug/
 emptyfridge.VC.VC.opendb
 /RestHandler/resources/
-/emptyfridge.VC.db
+emptyfridge.VC.db
+.vs/

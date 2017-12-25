@@ -4,14 +4,7 @@ import json
 from pprint import pprint
 import shutil
 import codecs
-'''
-sys.stdout = codecs.getwriter("iso-8859-1")(sys.stdout, 'xmlcharrefreplace')
 
-if sys.stdout.encoding != 'cp850':
-  sys.stdout = codecs.getwriter('cp850')(sys.stdout.buffer, 'strict')
-if sys.stderr.encoding != 'cp850':
-  sys.stderr = codecs.getwriter('cp850')(sys.stderr.buffer, 'strict')
-  '''
 ingridientsFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/ingridients.txt'
 recipeJsonFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/recipe.json'
 resultFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt'
@@ -76,9 +69,9 @@ def parseArgv():
         recipeNumber = sys.argv[2]
         res = getRecipeIngredientLines(recipeNumber)
         saveFile(resultFileName, res)
-    elif type == 'title':
+    elif type == 'label':
         recipeNumber = sys.argv[2]
-        res = getRecipeIngredientLines(recipeNumber)
+        res = getRecipeTitle(recipeNumber)
         saveFile(resultFileName, res)
     elif type == 'recipe':
         getRecipe()

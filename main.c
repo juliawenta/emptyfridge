@@ -11,17 +11,15 @@
 #include <string.h>
 #include <ctype.h>
 
-
 const char * print_welcome_screen(ALLEGRO_DISPLAY *display);
+void load_file(char *file_name, char *result);
 void print_meal_selection(ALLEGRO_DISPLAY *second_display); 
 void print_meal_description(); //TODO
 void print_textbox();
 void split_string(char* input_text, char** ingridients);
 
+
 int main(void) {
-
-//	printf("%i", test());
-
 
 	al_init();
 	al_init_font_addon();
@@ -39,16 +37,12 @@ int main(void) {
 		return 1;
 	}
 
-	//system("python.exe RestHandler/RestHandler.py url 1");
-
 	FILE *file= fopen("ingr.txt", "w");
 	const char * ingridients = print_welcome_screen(display);
 	
 	fprintf(file,  ingridients);
 	
-	//system("python.exe RestHandler/RestHandler.py url 1");
 	fclose(file);
-	//system("python.exe RestHandler/RestHandler.py url 1");
 
 	system("python.exe RestHandler/RestHandler.py recipe");
 
@@ -94,7 +88,7 @@ const char * print_welcome_screen(ALLEGRO_DISPLAY *display) {
 	print_textbox(input_text, display);
 
 	char ingridients[10][10];
-	//split_string(input_text,ingridients);
+	
 
 	al_destroy_font(font);
 	al_destroy_font(font1);
@@ -302,13 +296,31 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	al_draw_text(font, al_map_rgb(253, 143, 0), 60, 40, ALLEGRO_ALIGN_LEFT, "There are three ideas of meals based on your products,");
 	al_draw_text(font, al_map_rgb(253, 143, 0), 60, 77, ALLEGRO_ALIGN_LEFT, "please select one of them:");
 
-	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 38, NULL);
+	/*
+	We run python to obtain next label value. 
+	Every execution overwrites result.txt file with new label. 
+	*/
+	system("python.exe RestHandler/RestHandler.py label 0");
+	char label_0[1000];
+	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt", label_0);
+	printf("%s", label_0);
+	system("python.exe RestHandler/RestHandler.py label 1");
+	char label_1[1000];
+	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",label_1);
+	system("python.exe RestHandler/RestHandler.py label 2");
+	char label_2[1000];
+	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",label_2);
+
+	/*
+	We use labels created above to show recipes on second screen.
+	*/
+	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 28, NULL);
 	al_draw_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144), 2);
-	al_draw_text(font1, al_map_rgb(160, 160, 160), 130, 164, ALLEGRO_ALIGN_LEFT, "first");
+	al_draw_text(font1, al_map_rgb(160, 160, 160), 130, 164, ALLEGRO_ALIGN_LEFT, label_0);
 	al_draw_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144), 2);
-	al_draw_text(font1, al_map_rgb(95, 95, 95), 130, 234, ALLEGRO_ALIGN_LEFT, "second");
+	al_draw_text(font1, al_map_rgb(95, 95, 95), 130, 234, ALLEGRO_ALIGN_LEFT, label_1);
 	al_draw_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144), 2);
-	al_draw_text(font1, al_map_rgb(65, 65, 65), 130, 304, ALLEGRO_ALIGN_LEFT, "third");
+	al_draw_text(font1, al_map_rgb(65, 65, 65), 130, 304, ALLEGRO_ALIGN_LEFT, label_2);
 
 	int mouse_x;
 	int mouse_y;
@@ -395,29 +407,15 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	}
 }
 
-/*void split_string(char* input_text, char** ingridients) {
-
-	int i = 0;
-	char * pch;
-	pch = strtok(input_text, ",");
-	while (pch != NULL)    
-	{
-		pch = strtok(NULL, ",");
-		ingridients[i] = pch;
-		i++;
-	}
-}*/
 // cliparts included in bitmaps from: https://www.1001freedownloads.com, https://openclipart.org/user-detail/Gerald_G
 
 
-const char * load_file(char *file_name)
+void load_file(char *file_name, char *result)
 {
-	char result[1000];
-
 	FILE *file;
 	file = fopen(file_name, "r");
-	fgets(result, sizeof(result), file);
-	return result;
+	fgets(result, 200, file);
+	fclose(file);
 }
 
 	void print_meal_description(ALLEGRO_DISPLAY *display) {
@@ -442,7 +440,8 @@ const char * load_file(char *file_name)
 		bool click_link = false;
 
 		system("python.exe RestHandler/RestHandler.py url 1");
-		char *url=load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt");
+		char url[1000];
+		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",url);
 		printf("%s", url);
 		
 
