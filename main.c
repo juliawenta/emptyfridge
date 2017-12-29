@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <allegro5\allegro.h>
 #include <allegro5\allegro_font.h>
 #include <allegro5\allegro_color.h>
@@ -7,17 +10,13 @@
 #include <allegro5\mouse.h>
 #include <allegro5\keyboard.h>
 #include <allegro5\allegro_primitives.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
 const char * print_welcome_screen(ALLEGRO_DISPLAY *display);
+const char *create_python_command(int i, char *type);
 void load_file(char *file_name, char *result);
-void print_meal_selection(ALLEGRO_DISPLAY *second_display); 
-void print_meal_description(); //TODO
-void print_textbox();
-void split_string(char* input_text, char** ingridients);
-
+int print_meal_selection(ALLEGRO_DISPLAY *second_display); 
+void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal); //TODO
+void print_textbox(char* input_text, ALLEGRO_DISPLAY *display);
 
 int main(void) {
 
@@ -46,8 +45,8 @@ int main(void) {
 
 	system("python.exe RestHandler/RestHandler.py recipe");
 
-	print_meal_selection(display); //TODO: function returns int which describe recipe number
-	print_meal_description(display);
+	int selected_meal = print_meal_selection(display); 
+	print_meal_description(display,selected_meal);
 
 	ALLEGRO_MOUSE *mouse;
 	al_install_mouse();
@@ -94,9 +93,9 @@ const char * print_welcome_screen(ALLEGRO_DISPLAY *display) {
 	al_destroy_font(font1);
 	al_destroy_font(font2);
 
-	char cleaned_input_text[100];
+	char cleaned_input_text[100]; // to clean  file from unnecessary symbols
 
-	int i = 0, c = 0; /*I'm assuming you're not using C99+*/
+	int i = 0, c = 0;
 	for (; i < 100; i++)
 	{
 		if (isalpha(input_text[i]) || (input_text[i]==','))
@@ -222,7 +221,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 		if (click_t == true) {
 
 			if (insert_event.keyboard.unichar != 0) { //0 is null in ascii
-				if (insert_event.keyboard.unichar != 8) { //8 is backspace
+				if (insert_event.keyboard.unichar != 8) { //8 is backspace in ascii
 
 					input_text[i] = insert_event.keyboard.unichar;
 					int width = al_get_text_width(font2, input_text);
@@ -256,7 +255,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 
 					i++;
 					al_flip_display(display);
-					//carriage_position = carriage_position + char_size;
+					
 				}
 				else
 				{
@@ -282,8 +281,9 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	}
 		}
 
-	void print_meal_selection(ALLEGRO_DISPLAY *display){
+int print_meal_selection(ALLEGRO_DISPLAY *display){
 
+	int result = -1;
 	al_clear_to_color(al_map_rgb(255, 255, 255));
 
 	ALLEGRO_BITMAP *background = al_load_bitmap("secondScreenBack2.png");
@@ -314,13 +314,13 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	/*
 	We use labels created above to show recipes on second screen.
 	*/
-	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 28, NULL);
+	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 18, NULL);
 	al_draw_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144), 2);
-	al_draw_text(font1, al_map_rgb(160, 160, 160), 130, 164, ALLEGRO_ALIGN_LEFT, label_0);
+	al_draw_text(font1, al_map_rgb(160, 160, 160), 130, 177, ALLEGRO_ALIGN_LEFT, label_0);
 	al_draw_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144), 2);
-	al_draw_text(font1, al_map_rgb(95, 95, 95), 130, 234, ALLEGRO_ALIGN_LEFT, label_1);
+	al_draw_text(font1, al_map_rgb(95, 95, 95), 130, 248, ALLEGRO_ALIGN_LEFT, label_1);
 	al_draw_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144), 2);
-	al_draw_text(font1, al_map_rgb(65, 65, 65), 130, 304, ALLEGRO_ALIGN_LEFT, label_2);
+	al_draw_text(font1, al_map_rgb(65, 65, 65), 130, 318, ALLEGRO_ALIGN_LEFT, label_2);
 
 	int mouse_x;
 	int mouse_y;
@@ -347,7 +347,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 		mouse_x = select_event.mouse.x;
 		mouse_y = select_event.mouse.y;
 
-	//	printf("x: %i\n", mouse_x);
+		//printf("x: %i\n", mouse_x);
 		//printf("y: %i\n", mouse_y);
 
 		if ((mouse_x >= 100) && (mouse_y >= 180) && (mouse_x <= 120) && (mouse_y <= 200))
@@ -386,25 +386,31 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 			al_draw_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144), 2);
 		}
 	}
+	
 	if (select_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
 	{
 		if (mouse_first == true)
 		{
 			click_f = true; //means click at textbox
 			chosen = true;
+			result= 0;
 		}
 		if (mouse_second == true)
 		{
 			click_s = true; //means click at button
 			chosen = true;
+			result = 1;
 		}
 		if (mouse_third == true)
 		{
 			click_t = true; //means click at button
 			chosen = true;
+			result = 2;
 		}
 	}
+
 	}
+		return result;
 }
 
 // cliparts included in bitmaps from: https://www.1001freedownloads.com, https://openclipart.org/user-detail/Gerald_G
@@ -418,7 +424,35 @@ void load_file(char *file_name, char *result)
 	fclose(file);
 }
 
-	void print_meal_description(ALLEGRO_DISPLAY *display) {
+const char *create_python_command(int i, char *type) 
+{
+	char selected_meal_as_string[5];
+	char execute_python[50];
+	sprintf(selected_meal_as_string, "%d", i);
+	strcpy(execute_python, "python.exe RestHandler/RestHandler.py ");
+	strcat(execute_python, type);
+	strcat(execute_python, " ");
+	strcat(execute_python, selected_meal_as_string);
+	printf("%s", execute_python);
+	char cleaned_input_text[100];
+
+	int j = 0, c = 0;
+	for (; j < 100; j++)
+	{
+		if (isalpha(execute_python[j]) || (execute_python[j] == '/'))
+		{
+			cleaned_input_text[c] = execute_python[j];
+			c++;
+		}
+	}
+	cleaned_input_text[c] = '\0';
+
+	return cleaned_input_text;
+
+	return execute_python;
+}
+
+void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 
 		al_clear_to_color(al_map_rgb(255, 255, 255));
 		ALLEGRO_BITMAP *background = al_load_bitmap("thirdScreenBack.png");
@@ -439,7 +473,10 @@ void load_file(char *file_name, char *result)
 		bool mouse_over_here = false;
 		bool click_link = false;
 
-		system("python.exe RestHandler/RestHandler.py url 1");
+		//system
+		char cmd[100];
+		*cmd = create_python_command(selected_meal, "url");
+		system(cmd);
 		char url[1000];
 		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",url);
 		printf("%s", url);
@@ -460,7 +497,7 @@ void load_file(char *file_name, char *result)
 				x = select_event.mouse.x;
 				y = select_event.mouse.y;
 
-			//	printf("x: %i\n", x);
+				//printf("x: %i\n", x);
 				//printf("y: %i\n", y);
 			}
 			if ((y >= 449) && (y <= 463) && (x >= 96) && (x <= 139))
