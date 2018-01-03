@@ -1,9 +1,11 @@
+
 import sys
 import requests
 import json
 from pprint import pprint
 import shutil
 import codecs
+import urllib.request
 
 ingridientsFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/ingridients.txt'
 recipeJsonFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/recipe.json'
@@ -24,7 +26,7 @@ def readFile(fileName):
 def saveFile(fileName, fileBody):
     file = open(fileName,'w', encoding='utf-8')
     file.write(fileBody)
-
+    print(fileBody)
     file.close()
 
 def getRecipe():
@@ -34,10 +36,12 @@ def getRecipe():
     saveFile(recipeJsonFileName, res.text)
 
    
-def getRecipeImageUrl(recipeNumber):
+def getRecipeImage(recipeNumber):
     with open(recipeJsonFileName) as data_file:    
         data = json.load(data_file)
-        return data['hits'][recipeNumber]['recipe']['image']
+        imageUrl = data['hits'][int(recipeNumber)]['recipe']['image']
+        urllib.request.urlretrieve(imageUrl, 'image.jpg')
+       
 
 def getRecipeIngredientLines(recipeNumber):
     with open(recipeJsonFileName) as data_file:    
@@ -47,6 +51,7 @@ def getRecipeIngredientLines(recipeNumber):
 def getRecipeUrl(recipeNumber):
     with open(recipeJsonFileName) as data_file:    
         data = json.load(data_file)
+        aa = data['hits'][int(recipeNumber)]['recipe']['url']
         return data['hits'][int(recipeNumber)]['recipe']['url']
 
 def getRecipeTitle(recipeNumber):
@@ -63,8 +68,8 @@ def parseArgv():
         saveFile(resultFileName, res)
     elif type == 'image':
         recipeNumber = sys.argv[2]
-        res = getRecipeImageUrl(recipeNumber)
-        saveFile(resultFileName, res)
+        res = getRecipeImage(recipeNumber)
+      #saveFile(resultFileName, res)
     elif type == 'ingredient':
         recipeNumber = sys.argv[2]
         res = getRecipeIngredientLines(recipeNumber)

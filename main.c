@@ -10,6 +10,7 @@
 #include <allegro5\mouse.h>
 #include <allegro5\keyboard.h>
 #include <allegro5\allegro_primitives.h>
+#include <Windows.h>
 
 const char * print_welcome_screen(ALLEGRO_DISPLAY *display);
 const char *create_python_command(int i, char *type);
@@ -44,6 +45,8 @@ int main(void) {
 	fclose(file);
 
 	system("python.exe RestHandler/RestHandler.py recipe");
+
+
 
 	int selected_meal = print_meal_selection(display); 
 	print_meal_description(display,selected_meal);
@@ -303,7 +306,7 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 	system("python.exe RestHandler/RestHandler.py label 0");
 	char label_0[1000];
 	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt", label_0);
-	printf("%s", label_0);
+	//printf("%s", label_0);
 	system("python.exe RestHandler/RestHandler.py label 1");
 	char label_1[1000];
 	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",label_1);
@@ -394,23 +397,30 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 			click_f = true; //means click at textbox
 			chosen = true;
 			result= 0;
+			break;
 		}
 		if (mouse_second == true)
 		{
 			click_s = true; //means click at button
 			chosen = true;
 			result = 1;
+			break;
 		}
 		if (mouse_third == true)
 		{
 			click_t = true; //means click at button
 			chosen = true;
 			result = 2;
+			break;
 		}
+		
 	}
-
+	al_destroy_event_queue(select_queue);
 	}
 		return result;
+		
+		al_destroy_display(display);
+		
 }
 
 // cliparts included in bitmaps from: https://www.1001freedownloads.com, https://openclipart.org/user-detail/Gerald_G
@@ -424,7 +434,7 @@ void load_file(char *file_name, char *result)
 	fclose(file);
 }
 
-const char *create_python_command(int i, char *type) 
+const char *create_python_command(int i, char *type)
 {
 	char selected_meal_as_string[5];
 	char execute_python[50];
@@ -432,24 +442,35 @@ const char *create_python_command(int i, char *type)
 	strcpy(execute_python, "python.exe RestHandler/RestHandler.py ");
 	strcat(execute_python, type);
 	strcat(execute_python, " ");
+
 	strcat(execute_python, selected_meal_as_string);
 	printf("%s", execute_python);
-	char cleaned_input_text[100];
-
-	int j = 0, c = 0;
-	for (; j < 100; j++)
+	
+	int size = 0;
+	for (int j = 0; !isdigit(execute_python[j]); j++)
 	{
-		if (isalpha(execute_python[j]) || (execute_python[j] == '/'))
+		size++;
+	}
+	//char cleaned_input_text[100];
+	char *cleaned_input_text = malloc(size * sizeof(char));
+	int j = 0, c = 0;
+	for (; j < size +1 ; j++)
+	{
+		if ((isalpha(execute_python[j]) || (execute_python[j] == '/') || (execute_python[j] == '.') || (execute_python[j] == ' ') || (isdigit(execute_python[j]))))
 		{
 			cleaned_input_text[c] = execute_python[j];
 			c++;
+			if (isdigit(execute_python[j]))
+			{
+				break;
+			}
 		}
 	}
 	cleaned_input_text[c] = '\0';
 
 	return cleaned_input_text;
 
-	return execute_python;
+	//return execute_python;
 }
 
 void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
@@ -473,13 +494,24 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		bool mouse_over_here = false;
 		bool click_link = false;
 
+
+		system(create_python_command(selected_meal, "image"));
+
+
 		//system
-		char cmd[100];
-		*cmd = create_python_command(selected_meal, "url");
-		system(cmd);
+		//char cmd[100];
+		//*cmd = create_python_command(selected_meal, "url");
+		system(create_python_command(selected_meal, "url"));
 		char url[1000];
 		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",url);
+		
 		printf("%s", url);
+
+		char execute_cmd[100];
+		strcpy(execute_cmd, "cmd /c start ");
+		strcat(execute_cmd, url);
+
+		
 		
 
 		while (!third_screen) {
@@ -519,6 +551,7 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 				{
 					click = true; //means click at the link
 					click_link = true;
+					system(execute_cmd);
 				}
 			}
 		}
