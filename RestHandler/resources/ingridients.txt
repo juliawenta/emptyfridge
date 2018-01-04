@@ -1,1 +1,1 @@
-chicken,oregano,cheese
+milk,eggs,sugar

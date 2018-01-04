@@ -26,7 +26,7 @@ def readFile(fileName):
 def saveFile(fileName, fileBody):
     file = open(fileName,'w', encoding='utf-8')
     file.write(fileBody)
-    print(fileBody)
+    #print(fileBody)
     file.close()
 
 def getRecipe():

@@ -16,7 +16,7 @@ const char * print_welcome_screen(ALLEGRO_DISPLAY *display);
 const char *create_python_command(int i, char *type);
 void load_file(char *file_name, char *result);
 int print_meal_selection(ALLEGRO_DISPLAY *second_display); 
-void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal); //TODO
+void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal);
 void print_textbox(char* input_text, ALLEGRO_DISPLAY *display);
 
 int main(void) {
@@ -45,8 +45,6 @@ int main(void) {
 	fclose(file);
 
 	system("python.exe RestHandler/RestHandler.py recipe");
-
-
 
 	int selected_meal = print_meal_selection(display); 
 	print_meal_description(display,selected_meal);
@@ -289,15 +287,15 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 	int result = -1;
 	al_clear_to_color(al_map_rgb(255, 255, 255));
 
-	ALLEGRO_BITMAP *background = al_load_bitmap("secondScreenBack2.png");
+	ALLEGRO_BITMAP *background = al_load_bitmap("smallfridge.png");
 	al_init_image_addon();
 	al_draw_bitmap(background, 0, 0, 0);
 
 	al_draw_rectangle(50, 40, 750, 560, al_map_rgb(144, 144, 144), 2);
 
 	ALLEGRO_FONT *font = al_load_font("Cambay.AH.ttf", 30, NULL);
-	al_draw_text(font, al_map_rgb(253, 143, 0), 60, 40, ALLEGRO_ALIGN_LEFT, "There are three ideas of meals based on your products,");
-	al_draw_text(font, al_map_rgb(253, 143, 0), 60, 77, ALLEGRO_ALIGN_LEFT, "please select one of them:");
+	al_draw_text(font, al_map_rgb(253, 143, 0), 80, 40, ALLEGRO_ALIGN_LEFT, "There are three ideas of meals based on your products,");
+	al_draw_text(font, al_map_rgb(253, 143, 0), 80, 77, ALLEGRO_ALIGN_LEFT, "please select one of them:");
 
 	/*
 	We run python to obtain next label value. 
@@ -317,7 +315,7 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 	/*
 	We use labels created above to show recipes on second screen.
 	*/
-	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 18, NULL);
+	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 20, NULL);
 	al_draw_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144), 2);
 	al_draw_text(font1, al_map_rgb(160, 160, 160), 130, 177, ALLEGRO_ALIGN_LEFT, label_0);
 	al_draw_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144), 2);
@@ -444,14 +442,14 @@ const char *create_python_command(int i, char *type)
 	strcat(execute_python, " ");
 
 	strcat(execute_python, selected_meal_as_string);
-	printf("%s", execute_python);
+	//printf("%s", execute_python);
 	
 	int size = 0;
 	for (int j = 0; !isdigit(execute_python[j]); j++)
 	{
 		size++;
 	}
-	//char cleaned_input_text[100];
+	
 	char *cleaned_input_text = malloc(size * sizeof(char));
 	int j = 0, c = 0;
 	for (; j < size +1 ; j++)
@@ -470,7 +468,6 @@ const char *create_python_command(int i, char *type)
 
 	return cleaned_input_text;
 
-	//return execute_python;
 }
 
 void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
@@ -482,7 +479,7 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 	
 		ALLEGRO_FONT *font = al_load_font("Cambay.AH.ttf", 30, NULL);
 		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 22, ALLEGRO_ALIGN_LEFT, "That is a very good choice,");
-		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 50, ALLEGRO_ALIGN_LEFT, "here are some information about yours recipe:");
+		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 50, ALLEGRO_ALIGN_LEFT, "this is how the meal looks like:");
 
 		ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 25, NULL);
 		al_draw_text(font1, al_map_rgb(253, 143, 0), 45, 440, ALLEGRO_ALIGN_LEFT, "Click HERE to see recipe.");
@@ -494,18 +491,18 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		bool mouse_over_here = false;
 		bool click_link = false;
 
-
+		//call system to get image
 		system(create_python_command(selected_meal, "image"));
 
+		ALLEGRO_BITMAP *recipe_image = al_load_bitmap("image.jpg");
+		al_draw_bitmap(recipe_image, 270,120,0);
 
-		//system
-		//char cmd[100];
-		//*cmd = create_python_command(selected_meal, "url");
+		//call system to get url
 		system(create_python_command(selected_meal, "url"));
 		char url[1000];
 		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",url);
 		
-		printf("%s", url);
+		//printf("%s", url);
 
 		char execute_cmd[100];
 		strcpy(execute_cmd, "cmd /c start ");
