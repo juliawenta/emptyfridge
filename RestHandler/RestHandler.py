@@ -10,7 +10,7 @@ import urllib.request
 ingridientsFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/ingridients.txt'
 recipeJsonFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/recipe.json'
 resultFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt'
-apiKey = '' #insert your  api key here
+apiKey = '3c235b65ed5ac81c2418262fb477b45d' #insert your  api key here
 
 from shutil import copyfile
 copyfile('C:/Users/Wenta/Documents/emptyfridge/ingr.txt', 'C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/ingridients.txt')
@@ -46,7 +46,8 @@ def getRecipeImage(recipeNumber):
 def getRecipeIngredientLines(recipeNumber):
     with open(recipeJsonFileName) as data_file:    
         data = json.load(data_file)
-        return data['hits'][recipeNumber]['recipe']['ingredientLines']
+        list = data['hits'][int(recipeNumber)]['recipe']['ingredientLines']
+        return ','.join(list)
 
 def getRecipeUrl(recipeNumber):
     with open(recipeJsonFileName) as data_file:    

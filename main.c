@@ -76,7 +76,7 @@ const char * print_welcome_screen(ALLEGRO_DISPLAY *display) {
 	al_draw_text(font, al_map_rgb(253, 143, 0), 350, 600 / 8, ALLEGRO_ALIGN_CENTRE, "Hello! Welcome to emptyfridge!");
 	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 26, NULL);
 	al_draw_text(font1, al_map_rgb(253, 143, 0), 10, 200, ALLEGRO_ALIGN_LEFT, "It is a programme made to help you with yours daily struggle - cooking");
-	al_draw_text(font1, al_map_rgb(253, 143, 0), 10, 240, ALLEGRO_ALIGN_LEFT, "It is based on searching recipes by ingridients");
+	al_draw_text(font1, al_map_rgb(253, 143, 0), 10, 240, ALLEGRO_ALIGN_LEFT, "It is based on searching recipes by ingredients");
 
 	al_draw_text(font1, al_map_rgb(144, 144, 144), 10, 360, ALLEGRO_ALIGN_LEFT, "Please insert at least three products and separate them with comma:");
 
@@ -435,7 +435,7 @@ void load_file(char *file_name, char *result)
 const char *create_python_command(int i, char *type)
 {
 	char selected_meal_as_string[5];
-	char execute_python[50];
+	char execute_python[150];
 	sprintf(selected_meal_as_string, "%d", i);
 	strcpy(execute_python, "python.exe RestHandler/RestHandler.py ");
 	strcat(execute_python, type);
@@ -478,8 +478,8 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		al_draw_bitmap(background, 0, 0, 0);
 	
 		ALLEGRO_FONT *font = al_load_font("Cambay.AH.ttf", 30, NULL);
-		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 22, ALLEGRO_ALIGN_LEFT, "That is a very good choice,");
-		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 50, ALLEGRO_ALIGN_LEFT, "this is how the meal looks like:");
+		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 22, ALLEGRO_ALIGN_LEFT, "That is a very good choice!");
+		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 50, ALLEGRO_ALIGN_LEFT, "This is how the meal looks like:");
 
 		ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 25, NULL);
 		al_draw_text(font1, al_map_rgb(253, 143, 0), 45, 440, ALLEGRO_ALIGN_LEFT, "Click HERE to see recipe.");
@@ -491,17 +491,33 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		bool mouse_over_here = false;
 		bool click_link = false;
 
-		//call system to get image
+		//call system to get image and display it
 		system(create_python_command(selected_meal, "image"));
 
 		ALLEGRO_BITMAP *recipe_image = al_load_bitmap("image.jpg");
-		al_draw_bitmap(recipe_image, 270,120,0);
+		al_draw_bitmap(recipe_image, 100,120,0);
+
+		//call system to get ingredients and display them	
+		system(create_python_command(selected_meal, "ingredient"));
+		char lines[1000];
+		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt", lines);
+
+
+		ALLEGRO_FONT *font2 = al_load_font("Cambay.AH.ttf", 20, NULL);
+		char *pt;
+		pt = strtok(lines, ",");
+		int y_position = 120;
+		while (pt != NULL) {
+			pt = strtok(NULL, ",");
+			al_draw_text(font2, al_map_rgb(253, 143, 0), 450, y_position, ALLEGRO_ALIGN_LEFT, pt);
+			y_position = y_position + 20;
+		}
 
 		//call system to get url
 		system(create_python_command(selected_meal, "url"));
 		char url[1000];
 		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",url);
-		
+	
 		//printf("%s", url);
 
 		char execute_cmd[100];

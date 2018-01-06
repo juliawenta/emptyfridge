@@ -1,1 +1,1 @@
-milk,eggs,sugar
+chicken,cheese,tomato
