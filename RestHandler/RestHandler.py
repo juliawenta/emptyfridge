@@ -10,7 +10,7 @@ import urllib.request
 ingridientsFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/ingridients.txt'
 recipeJsonFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/recipe.json'
 resultFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt'
-apiKey = '3c235b65ed5ac81c2418262fb477b45d' #insert your  api key here
+apiKey = '' #insert your  api key here
 
 from shutil import copyfile
 copyfile('C:/Users/Wenta/Documents/emptyfridge/ingr.txt', 'C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/ingridients.txt')
