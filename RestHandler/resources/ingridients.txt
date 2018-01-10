@@ -1,1 +1,1 @@
-chicken,cheese,tomato
+chicken,cheese

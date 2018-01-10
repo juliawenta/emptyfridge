@@ -16,7 +16,7 @@ const char * print_welcome_screen(ALLEGRO_DISPLAY *display);
 const char *create_python_command(int i, char *type);
 void load_file(char *file_name, char *result);
 int print_meal_selection(ALLEGRO_DISPLAY *second_display); 
-void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal);
+int print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal);
 void print_textbox(char* input_text, ALLEGRO_DISPLAY *display);
 
 int main(void) {
@@ -36,18 +36,32 @@ int main(void) {
 		printf("Failed to create display.\n");
 		return 1;
 	}
+	int pmd_result = 1;
+	int sm_result = 11;
+	do {
+		FILE *file = fopen("ingr.txt", "w");
+		const char * ingridients = print_welcome_screen(display);
 
-	FILE *file= fopen("ingr.txt", "w");
-	const char * ingridients = print_welcome_screen(display);
-	
-	fprintf(file,  ingridients);
-	
-	fclose(file);
+		fprintf(file, ingridients);
 
-	system("python.exe RestHandler/RestHandler.py recipe");
+		fclose(file);
 
-	int selected_meal = print_meal_selection(display); 
-	print_meal_description(display,selected_meal);
+		do {
+			system("python.exe RestHandler/RestHandler.py recipe");
+
+			int selected_meal = print_meal_selection(display);
+			
+			if (selected_meal == 11) {
+				sm_result = 11;
+				break;
+			}
+			else
+			{
+				sm_result = 0;
+			}
+			pmd_result = print_meal_description(display, selected_meal);
+		} while (pmd_result != 0);
+	} while (sm_result == 11);
 
 	ALLEGRO_MOUSE *mouse;
 	al_install_mouse();
@@ -159,7 +173,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 	al_register_event_source(insert_queue, al_get_mouse_event_source());
 	al_register_event_source(insert_queue, al_get_keyboard_event_source());
 
-	while (!start && live)
+	do
 	{
 		ALLEGRO_EVENT insert_event;
 		al_wait_for_event(insert_queue, &insert_event);
@@ -279,7 +293,7 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 			insert_event.keyboard.unichar = NULL;
 
 		}
-	}
+	}while (!start && live);
 		}
 
 int print_meal_selection(ALLEGRO_DISPLAY *display){
@@ -290,8 +304,6 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 	ALLEGRO_BITMAP *background = al_load_bitmap("smallfridge.png");
 	al_init_image_addon();
 	al_draw_bitmap(background, 0, 0, 0);
-
-	al_draw_rectangle(50, 40, 750, 560, al_map_rgb(144, 144, 144), 2);
 
 	ALLEGRO_FONT *font = al_load_font("Cambay.AH.ttf", 30, NULL);
 	al_draw_text(font, al_map_rgb(253, 143, 0), 80, 40, ALLEGRO_ALIGN_LEFT, "There are three ideas of meals based on your products,");
@@ -333,8 +345,12 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 	bool mouse_second = false;
 	bool mouse_third = false;
 	bool chosen = false; //if recipe is chosen
+	bool  mouse_over_back = false;
+	bool click_back = false;
 
-		while(!chosen){
+	al_draw_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2); // back button
+
+	while(!chosen){
 
 			ALLEGRO_EVENT_QUEUE *select_queue = al_create_event_queue();
 			al_register_event_source(select_queue, al_get_mouse_event_source());
@@ -350,6 +366,19 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 
 		//printf("x: %i\n", mouse_x);
 		//printf("y: %i\n", mouse_y);
+
+		if ((mouse_y >= 550) && (mouse_y <= 570) && (mouse_x >= 10) && (mouse_x <= 30))
+		{
+			al_draw_filled_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
+			mouse_over_back = true;
+		}
+		else
+		{
+			al_draw_filled_rectangle(10, 550, 30, 570, al_map_rgb(255, 255, 255));
+			al_draw_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
+		}
+
+
 
 		if ((mouse_x >= 100) && (mouse_y >= 180) && (mouse_x <= 120) && (mouse_y <= 200))
 		{
@@ -412,6 +441,12 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 			break;
 		}
 		
+		if (mouse_over_back == true)
+		{
+			click_back = true; //means click at back button
+			result = 11;
+			break;
+		}
 	}
 	al_destroy_event_queue(select_queue);
 	}
@@ -470,7 +505,10 @@ const char *create_python_command(int i, char *type)
 
 }
 
-void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
+int print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
+
+
+	
 
 		al_clear_to_color(al_map_rgb(255, 255, 255));
 		ALLEGRO_BITMAP *background = al_load_bitmap("thirdScreenBack.png");
@@ -490,6 +528,11 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		bool click = false;
 		bool mouse_over_here = false;
 		bool click_link = false;
+		bool click_back = false;
+		bool mouse_over_back = false;
+
+
+		al_draw_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
 
 		//call system to get image and display it
 		system(create_python_command(selected_meal, "image"));
@@ -509,7 +552,7 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		int y_position = 120;
 		while (pt != NULL) {
 			pt = strtok(NULL, ",");
-			al_draw_text(font2, al_map_rgb(253, 143, 0), 450, y_position, ALLEGRO_ALIGN_LEFT, pt);
+			al_draw_text(font2, al_map_rgb(253, 143, 0), 430, y_position, ALLEGRO_ALIGN_LEFT, pt);
 			y_position = y_position + 20;
 		}
 
@@ -545,18 +588,32 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 				//printf("x: %i\n", x);
 				//printf("y: %i\n", y);
 			}
+		
+
+			if ((y >= 550) && (y <=570) && (x >= 10) && (x <= 30))
+			{
+				al_draw_filled_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
+				mouse_over_back = true;
+			}
+			else
+			{
+				al_draw_filled_rectangle(10, 550, 30, 570, al_map_rgb(255,255,255));
+				al_draw_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
+			}
+
 			if ((y >= 449) && (y <= 463) && (x >= 96) && (x <= 139))
 			{
 				al_draw_text(font1, al_map_rgb(255, 68, 0), 94, 440, ALLEGRO_ALIGN_LEFT, "HERE");
 				al_flip_display(display);
 				mouse_over_here = true;
 			}
-			else 
+			else
 			{
 				al_draw_text(font1, al_map_rgb(255, 255, 255), 45, 440, ALLEGRO_ALIGN_LEFT, "Click HERE to see recipe.");
 				al_draw_text(font1, al_map_rgb(253, 143, 0), 45, 440, ALLEGRO_ALIGN_LEFT, "Click HERE to see recipe.");
 				mouse_over_here = false;
 			}
+
 
 			if (select_event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
 			{
@@ -566,7 +623,14 @@ void print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 					click_link = true;
 					system(execute_cmd);
 				}
+				if (mouse_over_back == true)
+				{
+					click_back = true; //means click at the  back button
+					return 1;
+				}
+
 			}
 		}
 
+		return 0;
 	}
