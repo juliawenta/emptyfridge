@@ -46,6 +46,8 @@ int main(void) {
 
 		fclose(file);
 
+		//use *do while* to go through print/selection/description screen
+
 		do {
 			system("python.exe RestHandler/RestHandler.py recipe");
 
@@ -201,7 +203,6 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 			if ((mouse_x >= 560) && (mouse_y >= 410) && (mouse_x <= 600) && (mouse_y <= 450))
 			{
 				mouse_button = true;
-
 			}
 			else
 			{
@@ -267,16 +268,13 @@ void print_textbox(char* input_text, ALLEGRO_DISPLAY *display) {
 						copyArray(partOfInput_text, tempArray2, j);
 						al_draw_text(font2, al_map_rgb(144, 144, 144), carriage_position, 410, ALLEGRO_ALIGN_LEFT, tempArray2);
 					}
-
 					i++;
 					al_flip_display(display);
-					
-				}
+								}
 				else
 				{
 					if (i > 0)
 					{
-
 						input_text[i - 1] = ' ';
 						i--; //if basckspace we want to move back
 						al_draw_filled_rectangle(10, 410, 550, 450, al_map_rgb(255, 255, 255), 2); // textbox field
@@ -316,7 +314,6 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 	system("python.exe RestHandler/RestHandler.py label 0");
 	char label_0[1000];
 	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt", label_0);
-	//printf("%s", label_0);
 	system("python.exe RestHandler/RestHandler.py label 1");
 	char label_1[1000];
 	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",label_1);
@@ -342,13 +339,15 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 	int click_t = false; //click third recipe
 
 	bool mouse_first = false;
-	bool mouse_second = false;
+	bool mouse_second = false; //chosing one of recipes
 	bool mouse_third = false;
 	bool chosen = false; //if recipe is chosen
 	bool  mouse_over_back = false;
-	bool click_back = false;
+	bool click_back = false; //if user want to move back
 
-	al_draw_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2); // back button
+	ALLEGRO_FONT *font4 = al_load_font("Cambay.AH.ttf", 20, NULL);
+	al_draw_rectangle(700, 530, 770, 570, al_map_rgb(144, 144, 144), 2); //back button
+	al_draw_text(font4, al_map_rgb(81,81,81), 715, 539, ALLEGRO_ALIGN_LEFT, "BACK");
 
 	while(!chosen){
 
@@ -367,17 +366,20 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 		//printf("x: %i\n", mouse_x);
 		//printf("y: %i\n", mouse_y);
 
-		if ((mouse_y >= 550) && (mouse_y <= 570) && (mouse_x >= 10) && (mouse_x <= 30))
+		if ((mouse_y >= 530) && (mouse_y <= 570) && (mouse_x >= 700) && (mouse_x <= 770))
 		{
-			al_draw_filled_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
+			al_draw_rectangle(700, 530, 770, 570, al_map_rgb(144, 144, 144), 2); //back button
+			al_draw_filled_rectangle(700, 530, 770, 570, al_map_rgb(144, 144, 144)); 
+			al_draw_text(font4, al_map_rgb(81, 81, 81), 715, 539, ALLEGRO_ALIGN_LEFT, "BACK");
 			mouse_over_back = true;
 		}
 		else
 		{
-			al_draw_filled_rectangle(10, 550, 30, 570, al_map_rgb(255, 255, 255));
-			al_draw_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
-		}
+			al_draw_filled_rectangle(700, 530, 770, 570, al_map_rgb(255, 255, 255)); //back button
+			al_draw_rectangle(700, 530, 770, 570, al_map_rgb(144, 144, 144), 2);
+			al_draw_text(font4, al_map_rgb(81, 81, 81), 715, 539, ALLEGRO_ALIGN_LEFT, "BACK");
 
+		}
 
 
 		if ((mouse_x >= 100) && (mouse_y >= 180) && (mouse_x <= 120) && (mouse_y <= 200))
@@ -477,7 +479,6 @@ const char *create_python_command(int i, char *type)
 	strcat(execute_python, " ");
 
 	strcat(execute_python, selected_meal_as_string);
-	//printf("%s", execute_python);
 	
 	int size = 0;
 	for (int j = 0; !isdigit(execute_python[j]); j++)
@@ -507,9 +508,6 @@ const char *create_python_command(int i, char *type)
 
 int print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 
-
-	
-
 		al_clear_to_color(al_map_rgb(255, 255, 255));
 		ALLEGRO_BITMAP *background = al_load_bitmap("thirdScreenBack.png");
 		al_init_image_addon();
@@ -527,12 +525,13 @@ int print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		bool third_screen = false; //if recipe is chosen
 		bool click = false;
 		bool mouse_over_here = false;
-		bool click_link = false;
-		bool click_back = false;
+		bool click_link = false; //if user open url
+		bool click_back = false; //if user want to move back
 		bool mouse_over_back = false;
 
-
-		al_draw_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
+		ALLEGRO_FONT *font4 = al_load_font("Cambay.AH.ttf", 20, NULL);
+		al_draw_rectangle(700, 530, 770, 570, al_map_rgb(144, 144, 144), 2); //back button
+		al_draw_text(font4, al_map_rgb(81, 81, 81), 715, 539, ALLEGRO_ALIGN_LEFT, "BACK");
 
 		//call system to get image and display it
 		system(create_python_command(selected_meal, "image"));
@@ -561,14 +560,10 @@ int print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		char url[1000];
 		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",url);
 	
-		//printf("%s", url);
 
 		char execute_cmd[100];
 		strcpy(execute_cmd, "cmd /c start ");
 		strcat(execute_cmd, url);
-
-		
-		
 
 		while (!third_screen) {
 
@@ -590,15 +585,19 @@ int print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 			}
 		
 
-			if ((y >= 550) && (y <=570) && (x >= 10) && (x <= 30))
+			if ((y >= 530) && (y <=570) && (x >= 700) && (x <= 770))
 			{
-				al_draw_filled_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
+				al_draw_rectangle(700, 530, 770, 570, al_map_rgb(144, 144, 144), 2); //back button
+				al_draw_filled_rectangle(700, 530, 770, 570, al_map_rgb(144,144,144)); 
+				al_draw_text(font4, al_map_rgb(81, 81, 81), 715, 539, ALLEGRO_ALIGN_LEFT, "BACK");
 				mouse_over_back = true;
 			}
 			else
 			{
-				al_draw_filled_rectangle(10, 550, 30, 570, al_map_rgb(255,255,255));
-				al_draw_rectangle(10, 550, 30, 570, al_map_rgb(144, 144, 144), 2);
+				al_draw_filled_rectangle(700, 530, 770, 570, al_map_rgb(255,255,255)); //back button
+				al_draw_rectangle(700, 530, 770, 570, al_map_rgb(144, 144, 144), 2); 
+				al_draw_text(font4, al_map_rgb(81, 81, 81), 715, 539, ALLEGRO_ALIGN_LEFT, "BACK");
+		
 			}
 
 			if ((y >= 449) && (y <= 463) && (x >= 96) && (x <= 139))

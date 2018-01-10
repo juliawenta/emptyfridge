@@ -26,7 +26,6 @@ def readFile(fileName):
 def saveFile(fileName, fileBody):
     file = open(fileName,'w', encoding='utf-8')
     file.write(fileBody)
-    #print(fileBody)
     file.close()
 
 def getRecipe():
@@ -70,7 +69,7 @@ def parseArgv():
     elif type == 'image':
         recipeNumber = sys.argv[2]
         res = getRecipeImage(recipeNumber)
-      #saveFile(resultFileName, res)
+      
     elif type == 'ingredient':
         recipeNumber = sys.argv[2]
         res = getRecipeIngredientLines(recipeNumber)
@@ -81,9 +80,5 @@ def parseArgv():
         saveFile(resultFileName, res)
     elif type == 'recipe':
         getRecipe()
-
-#sys.argv[1]='url'
-#sys.argv[2]='1'
-
 
 parseArgv()
