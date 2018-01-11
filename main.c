@@ -91,10 +91,10 @@ const char * print_welcome_screen(ALLEGRO_DISPLAY *display) {
 	ALLEGRO_FONT *font = al_load_font("Cambay.AH.ttf", 45, NULL); // from https://fontlibrary.org/pl/font/cambay
 	al_draw_text(font, al_map_rgb(253, 143, 0), 350, 600 / 8, ALLEGRO_ALIGN_CENTRE, "Hello! Welcome to emptyfridge!");
 	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 26, NULL);
-	al_draw_text(font1, al_map_rgb(253, 143, 0), 10, 200, ALLEGRO_ALIGN_LEFT, "It is a programme made to help you with yours daily struggle - cooking");
+	al_draw_text(font1, al_map_rgb(253, 143, 0), 10, 200, ALLEGRO_ALIGN_LEFT, "That's a programme made to help you with yours daily struggle - cooking");
 	al_draw_text(font1, al_map_rgb(253, 143, 0), 10, 240, ALLEGRO_ALIGN_LEFT, "It is based on searching recipes by ingredients");
 
-	al_draw_text(font1, al_map_rgb(144, 144, 144), 10, 360, ALLEGRO_ALIGN_LEFT, "Please insert at least three products and separate them with comma:");
+	al_draw_text(font1, al_map_rgb(144, 144, 144), 10, 360, ALLEGRO_ALIGN_LEFT, "Please insert at least two products and separate them with comma:");
 
 	ALLEGRO_FONT *font2 = al_load_font("Cambay.AH.ttf", 22, NULL);
 	al_draw_text(font2, al_map_rgb(144, 144, 144), 571, 415, ALLEGRO_ALIGN_LEFT, "ok");
@@ -325,12 +325,12 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 	We use labels created above to show recipes on second screen.
 	*/
 	ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 20, NULL);
-	al_draw_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144), 2);
-	al_draw_text(font1, al_map_rgb(160, 160, 160), 130, 177, ALLEGRO_ALIGN_LEFT, label_0);
-	al_draw_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144), 2);
-	al_draw_text(font1, al_map_rgb(95, 95, 95), 130, 248, ALLEGRO_ALIGN_LEFT, label_1);
-	al_draw_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144), 2);
-	al_draw_text(font1, al_map_rgb(65, 65, 65), 130, 318, ALLEGRO_ALIGN_LEFT, label_2);
+	al_draw_rectangle(70, 180, 90, 200, al_map_rgb(144, 144, 144), 2);
+	al_draw_text(font1, al_map_rgb(160, 160, 160), 100, 177, ALLEGRO_ALIGN_LEFT, label_0);
+	al_draw_rectangle(70, 250, 90, 270, al_map_rgb(144, 144, 144), 2);
+	al_draw_text(font1, al_map_rgb(95, 95, 95), 100, 248, ALLEGRO_ALIGN_LEFT, label_1);
+	al_draw_rectangle(70, 320, 90, 340, al_map_rgb(144, 144, 144), 2);
+	al_draw_text(font1, al_map_rgb(65, 65, 65), 100, 318, ALLEGRO_ALIGN_LEFT, label_2);
 
 	int mouse_x;
 	int mouse_y;
@@ -382,7 +382,7 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 		}
 
 
-		if ((mouse_x >= 100) && (mouse_y >= 180) && (mouse_x <= 120) && (mouse_y <= 200))
+		if ((mouse_x >= 70) && (mouse_y >= 180) && (mouse_x <= 90) && (mouse_y <= 200))
 		{
 			mouse_first= true;
 			al_draw_filled_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144));
@@ -390,32 +390,32 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 		else
 		{
 			mouse_first = false;
-			al_draw_filled_rectangle(100, 180, 120, 200, al_map_rgb(255, 255, 255));
-			al_draw_rectangle(100, 180, 120, 200, al_map_rgb(144, 144, 144), 2);
+			al_draw_filled_rectangle(70, 180, 90, 200, al_map_rgb(255, 255, 255));
+			al_draw_rectangle(70, 180, 90, 200, al_map_rgb(144, 144, 144), 2);
 		}
 
-		if ((mouse_x >= 100) && (mouse_y >= 250) && (mouse_x <= 120) && (mouse_y <= 270))
+		if ((mouse_x >= 70) && (mouse_y >= 250) && (mouse_x <= 90) && (mouse_y <= 270))
 		{
 			mouse_second = true;
-			al_draw_filled_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144));
+			al_draw_filled_rectangle(70, 250, 90, 270, al_map_rgb(144, 144, 144));
 		}
 		else
 		{
 			mouse_second = false;
-			al_draw_filled_rectangle(100, 250, 120, 270, al_map_rgb(255, 255, 255));
-			al_draw_rectangle(100, 250, 120, 270, al_map_rgb(144, 144, 144), 2);
+			al_draw_filled_rectangle(70, 250, 90, 270, al_map_rgb(255, 255, 255));
+			al_draw_rectangle(70, 250, 90, 270, al_map_rgb(144, 144, 144), 2);
 		}
 
-		if ((mouse_x >= 100) && (mouse_y >= 320) && (mouse_x <= 120) && (mouse_y <= 340))
+		if ((mouse_x >= 70) && (mouse_y >= 320) && (mouse_x <= 90) && (mouse_y <= 340))
 		{
 			mouse_third = true;
-			al_draw_filled_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144));
+			al_draw_filled_rectangle(70, 320, 90, 340, al_map_rgb(144, 144, 144));
 		}
 		else
 		{
 			mouse_third = false;
-			al_draw_filled_rectangle(100, 320, 120, 340, al_map_rgb(255, 255, 255));
-			al_draw_rectangle(100, 320, 120, 340, al_map_rgb(144, 144, 144), 2);
+			al_draw_filled_rectangle(70, 320, 90, 340, al_map_rgb(255, 255, 255));
+			al_draw_rectangle(70, 320, 90, 340, al_map_rgb(144, 144, 144), 2);
 		}
 	}
 	
@@ -514,7 +514,7 @@ int print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		al_draw_bitmap(background, 0, 0, 0);
 	
 		ALLEGRO_FONT *font = al_load_font("Cambay.AH.ttf", 30, NULL);
-		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 22, ALLEGRO_ALIGN_LEFT, "That is a very good choice!");
+		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 22, ALLEGRO_ALIGN_LEFT, "That's a very good choice!");
 		al_draw_text(font, al_map_rgb(253, 143, 0), 45, 50, ALLEGRO_ALIGN_LEFT, "This is how the meal looks like:");
 
 		ALLEGRO_FONT *font1 = al_load_font("Cambay.AH.ttf", 25, NULL);
@@ -537,7 +537,7 @@ int print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		system(create_python_command(selected_meal, "image"));
 
 		ALLEGRO_BITMAP *recipe_image = al_load_bitmap("image.jpg");
-		al_draw_bitmap(recipe_image, 100,120,0);
+		al_draw_bitmap(recipe_image, 45,120,0);
 
 		//call system to get ingredients and display them	
 		system(create_python_command(selected_meal, "ingredient"));
@@ -545,13 +545,13 @@ int print_meal_description(ALLEGRO_DISPLAY *display, int selected_meal) {
 		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt", lines);
 
 
-		ALLEGRO_FONT *font2 = al_load_font("Cambay.AH.ttf", 20, NULL);
+		ALLEGRO_FONT *font2 = al_load_font("Cambay.AH.ttf", 22, NULL);
 		char *pt;
 		pt = strtok(lines, ",");
 		int y_position = 120;
 		while (pt != NULL) {
 			pt = strtok(NULL, ",");
-			al_draw_text(font2, al_map_rgb(253, 143, 0), 430, y_position, ALLEGRO_ALIGN_LEFT, pt);
+			al_draw_text(font2, al_map_rgb(253, 143, 0), 390, y_position, ALLEGRO_ALIGN_LEFT, pt);
 			y_position = y_position + 20;
 		}
 
