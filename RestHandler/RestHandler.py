@@ -2,42 +2,55 @@ import sys
 import requests
 import json
 from pprint import pprint
-
+import shutil
+import codecs
+import urllib.request
 
 ingridientsFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/ingridients.txt'
 recipeJsonFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/recipe.json'
 resultFileName='C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt'
 apiKey = '3c235b65ed5ac81c2418262fb477b45d' #insert your  api key here
 
+from shutil import copyfile
+copyfile('C:/Users/Wenta/Documents/emptyfridge/ingr.txt', 'C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/ingridients.txt')
+
 def readFile(fileName):
-	file = open(fileName,'r') 
+	file = open(fileName,'r')
+	with open('C:/Users/Wenta/Documents/emptyfridge/ingr.txt') as f:
+		lines = f.readlines()
+	with open(ingridientsFileName, 'w') as f1:
+		f1.writelines(lines)
 	return file.read()
 
 def saveFile(fileName, fileBody):
-    file = open(fileName,'w') 
+    file = open(fileName,'w', encoding='utf-8')
     file.write(fileBody)
     file.close()
 
 def getRecipe():
     ingridients = readFile(ingridientsFileName)
     url = 'https://api.edamam.com/search?q='+ ingridients + '&app_id=54edf467&app_key=' + apiKey + '&from=0&to=3&calories=gte%20591,%20lte%20722&health=alcohol-free'
-    res = requests.get(url)
+    res = requests.get(url) #we use request library to call edamam.com service to get json with list of recipes
     saveFile(recipeJsonFileName, res.text)
 
-
-def getRecipeImageUrl(recipeNumber):
+   
+def getRecipeImage(recipeNumber):
     with open(recipeJsonFileName) as data_file:    
         data = json.load(data_file)
-        return data['hits'][recipeNumber]['recipe']['image']
+        imageUrl = data['hits'][int(recipeNumber)]['recipe']['image']
+        urllib.request.urlretrieve(imageUrl, 'image.jpg')
+       
 
 def getRecipeIngredientLines(recipeNumber):
     with open(recipeJsonFileName) as data_file:    
         data = json.load(data_file)
-        return data['hits'][recipeNumber]['recipe']['ingredientLines']
+        list = data['hits'][int(recipeNumber)]['recipe']['ingredientLines']
+        return ','.join(list)
 
 def getRecipeUrl(recipeNumber):
     with open(recipeJsonFileName) as data_file:    
         data = json.load(data_file)
+        aa = data['hits'][int(recipeNumber)]['recipe']['url']
         return data['hits'][int(recipeNumber)]['recipe']['url']
 
 def getRecipeTitle(recipeNumber):
@@ -48,19 +61,23 @@ def getRecipeTitle(recipeNumber):
 
 def parseArgv():
     type = sys.argv[1]
-    recipeNumber = sys.argv[2]
     if type == 'url':
+        recipeNumber = sys.argv[2]
         res = getRecipeUrl(recipeNumber)        
         saveFile(resultFileName, res)
     elif type == 'image':
-        res = getRecipeImageUrl(recipeNumber)
-        saveFile(resultFileName, res)
+        recipeNumber = sys.argv[2]
+        res = getRecipeImage(recipeNumber)
+      
     elif type == 'ingredient':
+        recipeNumber = sys.argv[2]
         res = getRecipeIngredientLines(recipeNumber)
         saveFile(resultFileName, res)
-    elif type == 'title':
-        res = getRecipeIngredientLines(recipeNumber)
+    elif type == 'label':
+        recipeNumber = sys.argv[2]
+        res = getRecipeTitle(recipeNumber)
         saveFile(resultFileName, res)
+    elif type == 'recipe':
+        getRecipe()
 
-getRecipe()
 parseArgv()
