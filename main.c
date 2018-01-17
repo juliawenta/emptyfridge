@@ -313,14 +313,23 @@ int print_meal_selection(ALLEGRO_DISPLAY *display){
 	*/
 	system("python.exe RestHandler/RestHandler.py label 0");
 	char label_0[1000];
+	
 	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt", label_0);
-	system("python.exe RestHandler/RestHandler.py label 1");
-	char label_1[1000];
-	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",label_1);
-	system("python.exe RestHandler/RestHandler.py label 2");
-	char label_2[1000];
-	load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt",label_2);
-
+	printf("%s", label_0);
+	if (strcmp(label_0, "JSONDecodeError") ==0) {
+		return 11;
+	}
+	else if (strcmp(label_0, "IndexError") == 0) {
+		return 11;
+	}
+	
+		system("python.exe RestHandler/RestHandler.py label 1");
+		char label_1[1000];
+		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt", label_1);
+		system("python.exe RestHandler/RestHandler.py label 2");
+		char label_2[1000];
+		load_file("C:/Users/Wenta/Documents/emptyfridge/RestHandler/resources/result.txt", label_2);
+	
 	/*
 	We use labels created above to show recipes on second screen.
 	*/

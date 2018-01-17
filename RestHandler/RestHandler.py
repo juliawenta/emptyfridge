@@ -81,4 +81,9 @@ def parseArgv():
     elif type == 'recipe':
         getRecipe()
 
-parseArgv()
+try:
+    parseArgv()
+except json.decoder.JSONDecodeError:
+     saveFile(resultFileName, 'JSONDecodeError') 
+except IndexError:
+     saveFile(resultFileName, 'IndexError') 
